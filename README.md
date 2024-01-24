@@ -10,7 +10,7 @@
 
 05 - Abrir a seguinte url no navegador: "localhost:8123".
 
-06 - Instalar o Postman ou siminar no computador para testar as chamadas aos endpoints da API.
+06 - Instalar o Postman ou similar no computador para testar as chamadas aos endpoints da API.
 
 ------------------------
 # Documentação da API
