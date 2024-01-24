@@ -15,3 +15,39 @@
 ------------------------
 # Documentação da API
 
+#GET
+http://localhost:8123/api/mensagem/siglaOM
+http://localhost:8123/api/mensagem/detalhes/idMensagem
+
+#POST
+http://localhost:8123/api/mensagem
+
+Exemplo JSON:
+{
+    "assunto": "Assunto",
+    "texto": "Texto",
+    "sigilo": "Ostensivo",
+    "prazo": "20240131",
+    "observacao": "Observação",
+    "unidadeOrigemSigla": "SGM",
+    "unidadesDestinoSiglas" : ["DAdM"],
+    "unidadesInformacaoSiglas" : ["DFM"]
+}
+
+#PUT
+http://localhost:8123/api/mensagem/idMensagem
+
+Exemplo JSON:
+{
+    "assunto": "Assunto",
+    "texto": "Texto",
+    "sigilo": "Ostensivo",
+    "prazo": "20240131",
+    "observacao": "Observação",
+    "unidadeOrigemSigla": "SGM",
+    "unidadesDestinoSiglas" : ["DAdM"],
+    "unidadesInformacaoSiglas" : ["DFM"]
+}
+
+#DELETE
+http://localhost:8123/api/mensagem/idMensagem
