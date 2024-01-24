@@ -1,4 +1,4 @@
-#Seguir os seguintes passos para subir a aplicação no ambiente local
+# Seguir os seguintes passos para subir a aplicação no ambiente local
 
 01 - Instalar o Docker.
 
@@ -15,11 +15,11 @@
 ------------------------
 # Documentação da API
 
-#GET
+# GET
 http://localhost:8123/api/mensagem/siglaOM
 http://localhost:8123/api/mensagem/detalhes/idMensagem
 
-#POST
+# POST
 http://localhost:8123/api/mensagem
 
 Exemplo JSON: <br />
@@ -34,7 +34,7 @@ Exemplo JSON: <br />
     "unidadesInformacaoSiglas" : ["DFM"]
 }
 
-#PUT
+# PUT
 http://localhost:8123/api/mensagem/idMensagem
 
 Exemplo JSON: <br />
@@ -49,5 +49,5 @@ Exemplo JSON: <br />
     "unidadesInformacaoSiglas" : ["DFM"]
 }
 
-#DELETE
+# DELETE
 http://localhost:8123/api/mensagem/idMensagem
