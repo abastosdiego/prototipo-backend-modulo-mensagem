@@ -1,0 +1,2 @@
+Acquire::http::Proxy "http://nip:senha@proxy-gastao.mb:6060/";
+Acquire::https::Proxy "http://nip:senha@proxy-gastao.mb:6060/";
