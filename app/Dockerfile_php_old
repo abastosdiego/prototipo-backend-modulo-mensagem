@@ -1,0 +1,39 @@
+# Use a imagem oficial do PHP 8.2 com o módulo do Apache
+FROM php:8.2
+
+#ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+###### Estação de trabalho ubuntu ############
+
+# Copiar o arquivo de configuração de proxy para o APT para dentro da imagem
+COPY config/dev/apt.conf /etc/apt/apt.conf
+
+###### Fim -- Estação de trabalho ubuntu ############
+
+# Atualize a lista de pacotes e instale as dependências necessárias
+RUN apt-get -y update && apt-get install -y libicu-dev libzip-dev zip libjpeg-dev libpng-dev libfreetype6-dev libpq-dev
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-configure gd '--with-jpeg' '--with-freetype'
+RUN docker-php-ext-install intl opcache pdo_pgsql zip gd
+#RUN a2enmod rewrite
+
+# Copie os arquivos do seu projeto para o diretório de trabalho no contêiner
+COPY . /var/www/html
+
+# Define o diretório de trabalho para o aplicativo
+WORKDIR /var/www/html
+
+# Copiar archivo de configuración de Apache
+#COPY config/dev/apache.conf /etc/apache2/sites-available/000-default.conf
+
+# Defina as permissões adequadas para o Apache
+#RUN chown -R www-data:www-data /var/www/html
+
+# Exponha a porta 80 para acessar o aplicativo web
+EXPOSE 80
+
+# Inicie o Apache ao iniciar o contêiner
+#CMD ["apache2-foreground"]
+
+# Inicia a aplicação pelo servidor web embutido do PHP
+CMD ["php", "-S", "0.0.0.0:80","-t", "public/"]
