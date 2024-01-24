@@ -22,7 +22,7 @@ http://localhost:8123/api/mensagem/detalhes/idMensagem
 #POST
 http://localhost:8123/api/mensagem
 
-Exemplo JSON:
+Exemplo JSON: <br />
 {
     "assunto": "Assunto",
     "texto": "Texto",
@@ -37,7 +37,7 @@ Exemplo JSON:
 #PUT
 http://localhost:8123/api/mensagem/idMensagem
 
-Exemplo JSON:
+Exemplo JSON: <br />
 {
     "assunto": "Assunto",
     "texto": "Texto",
