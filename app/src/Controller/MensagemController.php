@@ -17,11 +17,12 @@ class MensagemController extends AbstractController
 {
     public function __construct(private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository){}
 
-    #[Route('/{unidade_origem_id}', name: 'app_mensagem_index', methods: ['GET'])]
-    public function index(int $unidade_origem_id): JsonResponse
+    #[Route('/{siglaUnidade}', name: 'app_mensagem_index', methods: ['GET'])]
+    public function index(string $siglaUnidade): JsonResponse
     {
+        $unidade = $this->unidadeRepository->findOneBy(['sigla' => $siglaUnidade]);
         //return $this->json($this->mensagemRepository->findAll());
-        return $this->json($this->mensagemRepository->findBy(['unidadeOrigem' => $unidade_origem_id]));
+        return $this->json($this->mensagemRepository->findBy(['unidadeOrigem' => $unidade->getId()]));
     }
 
     #[Route('/detalhes/{id}', name: 'app_mensagem_show', methods: ['GET'])]

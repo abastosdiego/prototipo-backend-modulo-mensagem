@@ -2,6 +2,9 @@ FROM php:apache
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
+ENV http_proxy=http://nip:senha@proxy-gastao.mb:6060
+ENV https_proxy=http://nip:senha@proxy-gastao.mb:6060
+
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
@@ -23,9 +26,9 @@ COPY apt.conf /etc/apt/apt.conf
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 # Install postgres and PDO
-RUN apt-get -y update && apt-get install -y libpq-dev
+RUN apt-get -y update && apt-get install -y libpq-dev zip
 RUN docker-php-ext-install pgsql pdo_pgsql
 RUN a2enmod rewrite
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install Composer (Não consegui baixar pelo proxy, baixei o arquivo do composer e coloquei na pasta app)
+RUN curl --sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
