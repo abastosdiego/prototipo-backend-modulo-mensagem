@@ -4,11 +4,20 @@ version: "3"
 services:
   app:
     container_name: "${CONTAINER_NAME_PREFIX}-${APP_NAME}"
-    build: .
+    build:
+        context: .
+        dockerfile: ./Dockerfile
+        args:
+            http_proxy: ${http_proxy}
+            https_proxy: ${https_proxy}
     volumes:
       - ${APP_PATH}:/var/www/html
     ports:
       - "${APP_PORT}:80"
+    environment:
+      - http_proxy=${http_proxy}
+      - https_proxy=${https_proxy}
+      - no_proxy=${no_proxy}
 
   db:
     container_name: "${CONTAINER_NAME_PREFIX}-postgres"
