@@ -13,7 +13,6 @@
 ------------------------
 # Documentação da API
 
-<br />
 # Unidade
 
 # GET
