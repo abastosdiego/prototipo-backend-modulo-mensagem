@@ -13,9 +13,12 @@
 ------------------------
 # Documentação da API
 
+# Unidade
 # GET
 http://localhost:8123/api/unidade
 <br />
+
+# Mensagem
 # GET
 http://localhost:8123/api/mensagem/siglaOM
 <br />
