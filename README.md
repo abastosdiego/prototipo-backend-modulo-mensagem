@@ -18,7 +18,7 @@
 # Unidade
 
 # GET
-http://localhost:8123/api/DAdM
+http://localhost:8123/api/unidade
 <br />
 <br />
 
