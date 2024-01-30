@@ -31,3 +31,9 @@ RUN a2enmod rewrite
 RUN curl -sS https://getcomposer.org/installer | php -- --version=2.6.6 --install-dir=/usr/local/bin --filename=composer
 RUN chmod +x /usr/local/bin/composer
 RUN composer config --global process-timeout 2000
+
+#RUN chmod +x ./instalar_dependencias.sh
+#RUN chmod +x ./criar_carregar_db.sh
+
+#ENTRYPOINT ["/bin/bash", "./instalar_dependencias.sh"]
+#ENTRYPOINT ["/bin/bash", "./criar_carregar_db.sh"]
