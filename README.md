@@ -2,7 +2,7 @@
 
 01 - Instalar o Docker.
 
-02 - Executar o comando "sudo docker compose up --build". Se der erro ao baixar o pacote "php:apache", execute o comando "docker pull php:apache".
+02 - Executar o comando "sudo -E docker compose up --build". Se der erro ao baixar o pacote "php:apache", execute o comando "docker pull php:apache".
 
 03 - Abrir a seguinte url no navegador: "localhost:8123/api/unidade".
 
