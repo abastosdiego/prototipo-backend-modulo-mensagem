@@ -19,6 +19,7 @@
 
 # GET
 http://localhost:8123/api/mensagem/siglaOM
+<br />
 http://localhost:8123/api/mensagem/detalhes/idMensagem
 
 # POST
