@@ -4,15 +4,9 @@
 
 02 - Executar o comando "sudo docker compose up --build". Se der erro ao baixar o pacote "php:apache", execute o comando "docker pull php:apache".
 
-03 - Abrir outra aba no terminal e entrar no container em execução com o comando "docker exec -it dadm-modulo-mensagem bash".
+03 - Abrir a seguinte url no navegador: "localhost:8123/api/unidade".
 
-04 - Executar os seguintes comandos:
-./instalar_dependencias.sh
-./criar_carregar_db.sh
-
-05 - Abrir a seguinte url no navegador: "localhost:8123/api/unidade".
-
-06 - Instalar o Postman ou similar no computador para testar as chamadas aos endpoints da API.
+04 - Instalar o Postman ou similar no computador para testar as chamadas aos endpoints da API.
 
 ------------------------
 # Documentação da API
