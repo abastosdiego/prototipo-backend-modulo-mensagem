@@ -22,6 +22,13 @@ http://localhost:8123/api/unidade
 <br />
 <br />
 
+# Usuario
+
+# GET
+http://localhost:8123/api/usuario/siglaUnidade
+<br />
+<br />
+
 # Mensagem
 # GET
 http://localhost:8123/api/mensagem/siglaOM
