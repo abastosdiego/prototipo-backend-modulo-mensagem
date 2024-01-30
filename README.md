@@ -2,15 +2,11 @@
 
 01 - Instalar o Docker.
 
-02 - Renovear o arquivo apt.conf-example para apt.conf
+02 - Executar o comando "sudo docker compose up --build". Se der erro ao baixar o pacote "php:apache" com o comando "docker pull php:apache".
 
-03 - Editar o conteúdo do arquivo apt.conf, informando o nip e senha de internet.
+03 - Abrir outra aba no terminal e entrar no container em execução com o comando "docker exec -it dadm-modulo-mensagem bash".
 
-04 - Executar o comando "sudo docker compose up --build". Se der erro ao baixar o pacote "php:apache" com o comando "docker pull php:apache".
-
-05 - Abrir outra aba no terminal e entrar no container em execução com o comando "docker exec -it dadm-modulo-mensagem bash".
-
-06 - Executar os seguintes comandos:
+04 - Executar os seguintes comandos:
 ./instalar_dependencias.sh
 ./criar_carregar_db.sh
 
