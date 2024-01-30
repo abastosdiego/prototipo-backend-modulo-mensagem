@@ -32,8 +32,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=2.6.6 --instal
 RUN chmod +x /usr/local/bin/composer
 RUN composer config --global process-timeout 2000
 
-#RUN chmod +x ./instalar_dependencias.sh
-#RUN chmod +x ./criar_carregar_db.sh
+#RUN chmod +x ./docker-entrypoint.sh
 
-#ENTRYPOINT ["/bin/bash", "./instalar_dependencias.sh"]
-#ENTRYPOINT ["/bin/bash", "./criar_carregar_db.sh"]
+ENTRYPOINT ["sh",  "./docker-entrypoint.sh"]
