@@ -21,6 +21,8 @@ class Unidade
     #[ORM\Column(length: 255)]
     private ?string $nome = null;
 
+
+
     ///#[ORM\OneToMany(mappedBy: 'unidadeOrigem', targetEntity: Mensagem::class)]
     ///private Collection $mensagensOrigem;
 
@@ -30,11 +32,15 @@ class Unidade
     ///#[ORM\ManyToMany(targetEntity: Mensagem::class, mappedBy: 'unidades_informacao')]
     ///private Collection $mensagens_informacao;
 
+    ///#[ORM\OneToMany(mappedBy: 'unidade', targetEntity: Usuario::class)]
+    ///private Collection $usuarios;
+
     public function __construct()
     {
         ///$this->mensagensOrigem = new ArrayCollection();
         ///$this->mensagens_destino = new ArrayCollection();
         ///$this->mensagens_informacao = new ArrayCollection();
+        ///$this->usuarios = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +152,36 @@ class Unidade
     ///{
     ///    if ($this->mensagens_informacao->removeElement($mensagensInformacao)) {
     ///        $mensagensInformacao->removeUnidadesInformacao($this);
+    ///    }
+///
+    ///    return $this;
+    ///}
+
+    ////**
+    /// * @return Collection<int, Usuario>
+    /// */
+    ///public function getUsuarios(): Collection
+    ///{
+    ///    return $this->usuarios;
+    ///}
+///
+    ///public function addUsuario(Usuario $usuario): static
+    ///{
+    ///    if (!$this->usuarios->contains($usuario)) {
+    ///        $this->usuarios->add($usuario);
+    ///        $usuario->setUnidade($this);
+    ///    }
+///
+    ///    return $this;
+    ///}
+///
+    ///public function removeUsuario(Usuario $usuario): static
+    ///{
+    ///    if ($this->usuarios->removeElement($usuario)) {
+    ///        // set the owning side to null (unless already changed)
+    ///        if ($usuario->getUnidade() === $this) {
+    ///            $usuario->setUnidade(null);
+    ///        }
     ///    }
 ///
     ///    return $this;
