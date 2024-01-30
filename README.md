@@ -6,9 +6,15 @@
 
 03 - Editar o conteúdo do arquivo apt.conf, informando o nip e senha de internet.
 
-04 - Executar o comando "sudo docker compose up". Se der erro ao baixar o pacote "php:apache", executar o comando "docker pull php:apache".
+04 - Executar o comando "sudo docker compose up --build". Se der erro ao baixar o pacote "php:apache" com o comando "docker pull php:apache".
 
-05 - Abrir a seguinte url no navegador: "localhost:8123".
+05 - Abrir outra aba no terminal e entrar no container em execução com o comando "docker exec -it dadm-modulo-mensagem bash".
+
+06 - Executar os seguintes comandos:
+./instalar_dependencias.sh
+./criar_carregar_db.sh
+
+05 - Abrir a seguinte url no navegador: "localhost:8123/api/unidade".
 
 06 - Instalar o Postman ou similar no computador para testar as chamadas aos endpoints da API.
 
@@ -30,8 +36,8 @@ Exemplo JSON: <br />
     "prazo": "20240131",
     "observacao": "Observação",
     "unidadeOrigemSigla": "SGM",
-    "unidadesDestinoSiglas" : ["DAdM"],
-    "unidadesInformacaoSiglas" : ["DFM"]
+    "unidadesDestinoSiglas" : ["DAdM","DFM"],
+    "unidadesInformacaoSiglas" : ["DGOM"]
 }
 
 # PUT
@@ -45,8 +51,8 @@ Exemplo JSON: <br />
     "prazo": "20240131",
     "observacao": "Observação",
     "unidadeOrigemSigla": "SGM",
-    "unidadesDestinoSiglas" : ["DAdM"],
-    "unidadesInformacaoSiglas" : ["DFM"]
+    "unidadesDestinoSiglas" : ["DAdM","DFM"],
+    "unidadesInformacaoSiglas" : ["DGOM"]
 }
 
 # DELETE
