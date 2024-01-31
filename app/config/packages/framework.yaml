@@ -16,6 +16,11 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+        default_options:
+            #Adicionado por conta do certificado emitido pelo CTIM
+            verify_peer: false
+
 when@test:
     framework:
         test: true

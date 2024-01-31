@@ -53,6 +53,12 @@ class Mensagem
     #[ORM\JoinTable(name: "mensagem_unidades_informacao")]
     private Collection $unidades_informacao;
 
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class)]
+    private Collection $tramites;
+
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class)]
+    private Collection $comentarios;
+
     public function __construct(array $valores, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao)
     {
         $this->unidades_destino = new ArrayCollection();
@@ -60,6 +66,8 @@ class Mensagem
         $this->setDataEntrada(new \DateTime('now'));
 
         $this->alterarValores($valores, $unidadeOrigem, $unidadesDestino, $unidadesInformacao);
+        $this->tramites = new ArrayCollection();
+        $this->comentarios = new ArrayCollection();
     }
 
     public function alterarValores(array $valores, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao) {
@@ -257,6 +265,66 @@ class Mensagem
     public function removeUnidadesInformacao(Unidade $unidadesInformacao): static
     {
         $this->unidades_informacao->removeElement($unidadesInformacao);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tramite>
+     */
+    public function getTramites(): Collection
+    {
+        return $this->tramites;
+    }
+
+    public function addTramite(Tramite $tramite): static
+    {
+        if (!$this->tramites->contains($tramite)) {
+            $this->tramites->add($tramite);
+            $tramite->setMensagem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTramite(Tramite $tramite): static
+    {
+        if ($this->tramites->removeElement($tramite)) {
+            // set the owning side to null (unless already changed)
+            if ($tramite->getMensagem() === $this) {
+                $tramite->setMensagem(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comentario>
+     */
+    public function getComentarios(): Collection
+    {
+        return $this->comentarios;
+    }
+
+    public function addComentario(Comentario $comentario): static
+    {
+        if (!$this->comentarios->contains($comentario)) {
+            $this->comentarios->add($comentario);
+            $comentario->setMensagem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComentario(Comentario $comentario): static
+    {
+        if ($this->comentarios->removeElement($comentario)) {
+            // set the owning side to null (unless already changed)
+            if ($comentario->getMensagem() === $this) {
+                $comentario->setMensagem(null);
+            }
+        }
 
         return $this;
     }

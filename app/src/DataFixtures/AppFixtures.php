@@ -7,42 +7,40 @@ use App\Entity\Usuario;
 use App\Repository\UnidadeRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(private HttpClientInterface $httpClient, private UnidadeRepository $unidadeRepository){}
+
     public function load(ObjectManager $manager): void
     {
         //### Unidades ###//
 
-        $unidadeDAdM = new Unidade();
-        $unidadeDAdM->setSigla('DAdM');
-        $unidadeDAdM->setNome('Diretoria de Administração da Marinha');
-        $manager->persist($unidadeDAdM);
-        
-        $unidade = new Unidade();
-        $unidade->setSigla('DFM');
-        $unidade->setNome('Diretoria de Finanças da Marinha');
-        $manager->persist($unidade);
+        $response = $this->httpClient->request(
+            'GET',
+            'https://sisnetuno-hmlg.dadm.mb/api/om/v1/lista'
+        );
 
-        $unidade = new Unidade();
-        $unidade->setSigla('SGM');
-        $unidade->setNome('Secretaria Geral da Marinha');
-        $manager->persist($unidade);
+        $statusCode = $response->getStatusCode();
 
-        $unidade = new Unidade();
-        $unidade->setSigla('DFM');
-        $unidade->setNome('DIRETORIA DE FINANÇAS DA MARINHA');
-        $manager->persist($unidade);
+        foreach($response->toArray() as $item){
 
-        $unidade = new Unidade();
-        $unidade->setSigla('DGOM');
-        $unidade->setNome('DIRETORIA DE GESTÃO ORÇAMENTÁRIA DA MARINHA');
-        $manager->persist($unidade);
+            $unidade = new Unidade();
+            $unidade->setSigla($item["sigla"]);
+            $unidade->setNome($item["nome"]);
+            
+            if($item["sigla"] == "DAdM") {
+                $unidadeDAdM = $unidade;
+            }
 
-        $unidade = new Unidade();
-        $unidade->setSigla('DAbM');
-        $unidade->setNome('DIRETORIA DE ABASTECIMENTO DA MARINHA');
-        $manager->persist($unidade);
+            // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
+            $manager->persist($unidade);
+        }
+
+        // Efetua as alterações no banco de dados
+        $manager->flush();
+
 
         //### Usuários ###//
 

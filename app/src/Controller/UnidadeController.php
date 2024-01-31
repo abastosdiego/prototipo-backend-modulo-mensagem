@@ -17,4 +17,5 @@ class UnidadeController extends AbstractController
     {
         return $this->json($this->unidadeRepository->findAll());
     }
+
 }
