@@ -25,20 +25,22 @@ http://localhost:8123/api/unidade
 # Usuario
 
 # GET
-http://localhost:8123/api/usuario/siglaUnidade
+http://localhost:8123/api/usuario/unidade/{siglaUnidade}
 <br />
 <br />
 
 # Mensagem
 # GET
-http://localhost:8123/api/mensagem/siglaOM
+http://localhost:8123/api/mensagem/unidade/{siglaUnidade}
 <br />
-http://localhost:8123/api/mensagem/detalhes/idMensagem
+ou
+<br />
+http://localhost:8123/api/mensagem/{idMensagem}
 
 # POST
 http://localhost:8123/api/mensagem
 
-Exemplo JSON: <br />
+<br />
 {
     "assunto": "Assunto",
     "texto": "Texto",
@@ -51,9 +53,9 @@ Exemplo JSON: <br />
 }
 
 # PUT
-http://localhost:8123/api/mensagem/idMensagem
+http://localhost:8123/api/mensagem/{idMensagem}
 
-Exemplo JSON: <br />
+<br />
 {
     "assunto": "Assunto",
     "texto": "Texto",
@@ -66,4 +68,27 @@ Exemplo JSON: <br />
 }
 
 # DELETE
-http://localhost:8123/api/mensagem/idMensagem
+http://localhost:8123/api/mensagem/{idMensagem}
+
+<br />
+
+# Comentários
+
+# GET
+(Via API de mensagem)
+
+# POST
+http://localhost:8123/api/comentario/{idMensagem}/{idUsuario}
+
+<br />
+{
+    "texto": "texto do comentário"
+}
+
+# PUT
+http://localhost:8123/api/comentario/{idComentario}
+
+<br />
+{
+    "texto": "texto do comentário"
+}
