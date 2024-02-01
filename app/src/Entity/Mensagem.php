@@ -8,8 +8,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MensagemRepository::class)]
+#[Groups(['show_mensagem'])]
 class Mensagem
 {
     #[ORM\Id]
@@ -56,7 +58,7 @@ class Mensagem
     #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class)]
     private Collection $tramites;
 
-    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class)]
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class, cascade: ['persist', 'remove'])]
     private Collection $comentarios;
 
     public function __construct(array $valores, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao)
@@ -203,12 +205,6 @@ class Mensagem
         return $this;
     }
 
-    public function setAutorizado() {
-        $this->data_autorizacao = new DateTime('now');
-
-        //Setar data_hora automaticamente nesse momento ????
-    }
-
     public function getUnidadeOrigem(): ?Unidade
     {
         return $this->unidadeOrigem;
@@ -219,6 +215,14 @@ class Mensagem
         $this->unidadeOrigem = $unidadeOrigem;
 
         return $this;
+    }
+
+    public function getDataAutorizacao() {
+        return $this->data_autorizacao;
+    }
+
+    public function setAutorizado() {
+        $this->data_autorizacao = new DateTime('now');
     }
 
     /**

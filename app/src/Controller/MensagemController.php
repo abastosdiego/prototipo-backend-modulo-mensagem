@@ -11,24 +11,36 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/mensagem')]
 class MensagemController extends AbstractController
 {
-    public function __construct(private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository){}
+    public function __construct(private EntityManagerInterface $entityManager, private SerializerInterface $serializer, private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository){}
 
-    #[Route('/{siglaUnidade}', name: 'app_mensagem_index', methods: ['GET'])]
-    public function index(string $siglaUnidade): JsonResponse
+    #[Route('/unidade/{siglaUnidade}', name: 'app_mensagem_index', methods: ['GET'])]
+    public function index(string $siglaUnidade) : JsonResponse
     {
         $unidade = $this->unidadeRepository->findOneBy(['sigla' => $siglaUnidade]);
-        //return $this->json($this->mensagemRepository->findAll());
-        return $this->json($this->mensagemRepository->findBy(['unidadeOrigem' => $unidade->getId()]));
+
+        $mensagens = $this->mensagemRepository->findBy(['unidadeOrigem' => $unidade->getId()]);
+        
+        $context = (new ObjectNormalizerContextBuilder())
+            ->withGroups('show_mensagem')
+            ->toArray();
+
+        return JsonResponse::fromJsonString($this->serializer->serialize($mensagens, 'json', $context));
     }
 
-    #[Route('/detalhes/{id}', name: 'app_mensagem_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_mensagem_show', methods: ['GET'])]
     public function show(Mensagem $mensagem): JsonResponse
     {
-        return $this->json($mensagem);
+        $context = (new ObjectNormalizerContextBuilder())
+            ->withGroups('show_mensagem')
+            ->toArray();
+
+        return JsonResponse::fromJsonString($this->serializer->serialize($mensagem, 'json', $context));
     }
 
     #[Route('', name: 'app_mensagem_new', methods: ['POST'])]
@@ -40,8 +52,6 @@ class MensagemController extends AbstractController
         $unidadesInformacao = $this->getUnidadesInformacaoByRequest($request);
 
         $mensagem = new Mensagem($request->toArray(), $unidadeOrigem, $unidadesDestino, $unidadesInformacao);
-        
-        //$this->mensagemRepository->add($mensagem, flush:true);
 
         // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
         $entityManager->persist($mensagem);
@@ -54,8 +64,8 @@ class MensagemController extends AbstractController
         );
     }
 
-    #[Route('/{id}', name: 'app_mensagem_edit', methods: ['PUT'])]
-    public function edit(Request $request, Mensagem $mensagem, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/{mensagem}', name: 'app_mensagem_edit', methods: ['PUT'])]
+    public function edit(Request $request, Mensagem $mensagem): JsonResponse
     {
         $unidadeOrigem = $this->getUnidadeOrigemByRequest($request);
         $unidadesDestino = $this->getUnidadesDestinoByRequest($request);
@@ -64,20 +74,20 @@ class MensagemController extends AbstractController
         $mensagem->alterarValores($request->toArray(), $unidadeOrigem, $unidadesDestino, $unidadesInformacao);
 
         // Efetua as alterações no banco de dados
-        $entityManager->flush();
+        $this->entityManager->flush();
 
         return $this->json(
             ['mensagem' => 'atualizado com sucesso!']
         );
     }
 
-    #[Route('/{id}', name: 'app_mensagem_delete', methods: ['DELETE'])]
-    public function delete(Request $request, Mensagem $mensagem, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/{mensagem}', name: 'app_mensagem_delete', methods: ['DELETE'])]
+    public function delete(Request $request, Mensagem $mensagem): JsonResponse
     {
         if ($mensagem){
 
-            $entityManager->remove($mensagem);
-            $entityManager->flush();
+            $this->entityManager->remove($mensagem);
+            $this->entityManager->flush();
 
             return $this->json(
                 ['mensagem' => 'excluído com sucesso!']

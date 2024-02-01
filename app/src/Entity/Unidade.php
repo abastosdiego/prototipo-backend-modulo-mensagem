@@ -3,9 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UnidadeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UnidadeRepository::class)]
 class Unidade
@@ -16,12 +15,11 @@ class Unidade
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    #[Groups(['show_mensagem'])]
     private ?string $sigla = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nome = null;
-
-
 
     ///#[ORM\OneToMany(mappedBy: 'unidadeOrigem', targetEntity: Mensagem::class)]
     ///private Collection $mensagensOrigem;

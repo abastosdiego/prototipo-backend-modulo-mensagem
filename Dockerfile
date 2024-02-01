@@ -1,5 +1,8 @@
 FROM php:apache
 
+
+ENV TZ=America/Sao_Paulo
+
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
@@ -32,6 +35,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=2.6.6 --instal
 RUN chmod +x /usr/local/bin/composer
 RUN composer config --global process-timeout 2000
 
-#RUN chmod +x ./docker-entrypoint.sh
+#Ajuste do relógio
+#RUN ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+#RUN dpkg-reconfigure -f noninteractive tzdata
 
 ENTRYPOINT ["sh",  "./docker-entrypoint.sh"]

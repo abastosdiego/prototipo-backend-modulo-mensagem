@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\ComentarioRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ComentarioRepository::class)]
 class Comentario
@@ -11,12 +13,15 @@ class Comentario
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_mensagem'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 1000)]
+    #[Groups(['show_mensagem'])]
     private ?string $texto = null;
 
     #[ORM\Column]
+    #[Groups(['show_mensagem'])]
     private ?\DateTimeImmutable $data_hora = null;
 
     #[ORM\ManyToOne(inversedBy: 'comentarios')]
@@ -25,11 +30,22 @@ class Comentario
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_mensagem'])]
     private ?Unidade $unidade = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_mensagem'])]
     private ?Usuario $usuario = null;
+
+    public function __construct(array $valores, Mensagem $mensagem, Unidade $unidade, Usuario $usuario)
+    {
+        $this->setTexto($valores['texto']);
+        $this->setDataHora(new DateTimeImmutable("now"));
+        $this->setMensagem($mensagem);
+        $this->setUnidade($unidade);
+        $this->setUsuario($usuario);
+    }
 
     public function getId(): ?int
     {
