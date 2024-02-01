@@ -12,7 +12,7 @@ class UnidadeController extends AbstractController
 {
     public function __construct(private UnidadeRepository $unidadeRepository){}
 
-    #[Route('/', name: 'app_unidade')]
+    #[Route('/', name: 'app_unidade', methods: ['GET'])]
     public function index(): JsonResponse
     {
         return $this->json($this->unidadeRepository->findAll());

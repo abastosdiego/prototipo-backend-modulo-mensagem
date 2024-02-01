@@ -13,7 +13,7 @@ class UsuarioController extends AbstractController
 {
     public function __construct(private UsuarioRepository $usuarioRepository, private UnidadeRepository $unidadeRepository){}
 
-    #[Route('/{siglaUnidade}', name: 'app_usuario')]
+    #[Route('/unidade/{siglaUnidade}', name: 'app_usuario', methods: ['GET'])]
     public function index(string $siglaUnidade): JsonResponse
     {
         $unidade = $this->unidadeRepository->findOneBy(['sigla' => $siglaUnidade]);
