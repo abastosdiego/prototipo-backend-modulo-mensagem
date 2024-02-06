@@ -6,7 +6,9 @@ use App\Entity\Mensagem;
 use App\Entity\Unidade;
 use App\Repository\MensagemRepository;
 use App\Repository\UnidadeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +19,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/mensagem')]
 class MensagemController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager, private SerializerInterface $serializer, private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository){}
+    public function __construct(private EntityManagerInterface $entityManager, private SerializerInterface $serializer, private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository, private LoggerInterface $logger){}
 
     #[Route('/unidade/{siglaUnidade}', name: 'app_mensagem_index', methods: ['GET'])]
     public function index(string $siglaUnidade) : JsonResponse
@@ -46,11 +48,10 @@ class MensagemController extends AbstractController
     #[Route('', name: 'app_mensagem_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-
         $unidadeOrigem = $this->getUnidadeOrigemByRequest($request);
         $unidadesDestino = $this->getUnidadesDestinoByRequest($request);
         $unidadesInformacao = $this->getUnidadesInformacaoByRequest($request);
-
+        
         $mensagem = new Mensagem($request->toArray(), $unidadeOrigem, $unidadesDestino, $unidadesInformacao);
 
         // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
@@ -109,6 +110,9 @@ class MensagemController extends AbstractController
 
         if (isset($unidadesDestinoSiglas)) {
             foreach($unidadesDestinoSiglas as $sigla) {
+
+                //$this->logger->debug('sigla: '.$sigla);
+
                 $unidade = $this->unidadeRepository->findOneBy(['sigla' => $sigla]);
                 array_push($unidadesDestino, $unidade);
             }
