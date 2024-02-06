@@ -61,7 +61,8 @@ class MensagemController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            ['mensagem' => 'cadastrado com sucesso!']
+            ['mensagem' => 'cadastrado com sucesso!',
+            'idMensagem' => $mensagem->getId()]
         );
     }
 
