@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Tramite;
+use App\Entity\TramitePassado;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Tramite>
+ * @extends ServiceEntityRepository<TramitePassado>
  *
- * @method Tramite|null find($id, $lockMode = null, $lockVersion = null)
- * @method Tramite|null findOneBy(array $criteria, array $orderBy = null)
- * @method Tramite[]    findAll()
- * @method Tramite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TramitePassado|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TramitePassado|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TramitePassado[]    findAll()
+ * @method TramitePassado[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TramiteRepository extends ServiceEntityRepository
+class TramitePassadoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Tramite::class);
+        parent::__construct($registry, TramitePassado::class);
     }
 
 //    /**
-//     * @return Tramite[] Returns an array of Tramite objects
+//     * @return TramitePassado[] Returns an array of TramitePassado objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class TramiteRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Tramite
+//    public function findOneBySomeField($value): ?TramitePassado
 //    {
 //        return $this->createQueryBuilder('t')
 //            ->andWhere('t.exampleField = :val')

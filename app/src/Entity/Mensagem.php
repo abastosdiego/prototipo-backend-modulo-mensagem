@@ -45,7 +45,7 @@ class Mensagem
 
     #[ORM\ManyToOne(inversedBy: 'mensagensOrigem')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Unidade $unidadeOrigem = null;
+    private ?Unidade $unidade_origem = null;
 
     #[ORM\ManyToMany(targetEntity: Unidade::class, inversedBy: 'mensagens_destino')]
     #[ORM\JoinTable(name: "mensagem_unidades_destino")]
@@ -55,7 +55,7 @@ class Mensagem
     #[ORM\JoinTable(name: "mensagem_unidades_informacao")]
     private Collection $unidades_informacao;
 
-    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class)]
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class, cascade: ['persist', 'remove'])]
     private Collection $tramites;
 
     #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class, cascade: ['persist', 'remove'])]
@@ -63,16 +63,17 @@ class Mensagem
 
     public function __construct(array $valores, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao)
     {
+        $this->setUnidadeOrigem($unidadeOrigem);
         $this->unidades_destino = new ArrayCollection();
         $this->unidades_informacao = new ArrayCollection();
         $this->setDataEntrada(new \DateTime('now'));
 
-        $this->alterarValores($valores, $unidadeOrigem, $unidadesDestino, $unidadesInformacao);
+        $this->carregarValores($valores, $unidadesDestino, $unidadesInformacao);
         $this->tramites = new ArrayCollection();
         $this->comentarios = new ArrayCollection();
     }
 
-    public function alterarValores(array $valores, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao) {
+    public function carregarValores(array $valores, array $unidadesDestino, array $unidadesInformacao) {
         if(isset($valores['data_hora'])) {
             $this->setDataHora($valores['data_hora']);
         } else {
@@ -100,8 +101,6 @@ class Mensagem
         } else {
             $this->setPrazo(null);
         }
-
-        $this->setUnidadeOrigem($unidadeOrigem);
         
         $this->unidades_destino = new ArrayCollection();
         foreach($unidadesDestino as $unidade) {
@@ -207,12 +206,12 @@ class Mensagem
 
     public function getUnidadeOrigem(): ?Unidade
     {
-        return $this->unidadeOrigem;
+        return $this->unidade_origem;
     }
 
     public function setUnidadeOrigem(?Unidade $unidadeOrigem): static
     {
-        $this->unidadeOrigem = $unidadeOrigem;
+        $this->unidade_origem = $unidadeOrigem;
 
         return $this;
     }
@@ -273,34 +272,35 @@ class Mensagem
         return $this;
     }
 
+    public function criarTramite(Unidade $unidade, Usuario $tramiteAtual, array $usuariosTramiteFuturo): static
+    {
+        if ($this->getTramite($unidade)) { 
+            throw new \DomainException("Trâmite já existe!");
+        }
+
+        $tramite = new Tramite($this, $unidade, $tramiteAtual);
+        $this->tramites->add($tramite);
+
+        $tramite->criarTramiteFuturo($usuariosTramiteFuturo);
+
+        return $this;
+    }
+
+    public function getTramite(Unidade $unidade) : Tramite | null {
+        foreach($this->tramites as $tramite) {
+            if ($tramite->getUnidade()->getId() == $unidade->getId()) {
+                return (object) $tramite;
+            }
+        }
+        return null;
+    }
+
     /**
      * @return Collection<int, Tramite>
      */
     public function getTramites(): Collection
     {
         return $this->tramites;
-    }
-
-    public function addTramite(Tramite $tramite): static
-    {
-        if (!$this->tramites->contains($tramite)) {
-            $this->tramites->add($tramite);
-            $tramite->setMensagem($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTramite(Tramite $tramite): static
-    {
-        if ($this->tramites->removeElement($tramite)) {
-            // set the owning side to null (unless already changed)
-            if ($tramite->getMensagem() === $this) {
-                $tramite->setMensagem(null);
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -311,25 +311,34 @@ class Mensagem
         return $this->comentarios;
     }
 
-    public function addComentario(Comentario $comentario): static
+    public function getComentario(int $idComentario): Comentario
     {
-        if (!$this->comentarios->contains($comentario)) {
-            $this->comentarios->add($comentario);
-            $comentario->setMensagem($this);
+        foreach($this->comentarios as $comentario) {
+            if ($comentario->getId() === $idComentario) { return (object) $comentario; }
         }
-
-        return $this;
+        throw new \DomainException("Comentário não existe!");
     }
 
-    public function removeComentario(Comentario $comentario): static
+    public function addComentario(string $texto, Usuario $usuario): Comentario
     {
-        if ($this->comentarios->removeElement($comentario)) {
-            // set the owning side to null (unless already changed)
-            if ($comentario->getMensagem() === $this) {
-                $comentario->setMensagem(null);
-            }
+        $comentario = new Comentario($texto, $this, $usuario->getUnidade(), $usuario);
+
+        if (!$this->comentarios->contains($comentario)) {
+            $this->comentarios->add($comentario);
         }
 
-        return $this;
+        return $comentario;
+    }
+
+    public function changeComentario(int $idComentario, string $texto): void
+    {
+        $comentario = $this->getComentario($idComentario);
+        $comentario->alterarTexto($texto);
+    }
+
+    public function removeComentario(int $idComentario): void
+    {
+        $comentario = $this->getComentario($idComentario);
+        $this->comentarios->removeElement($comentario);
     }
 }

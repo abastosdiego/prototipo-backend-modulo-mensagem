@@ -45,84 +45,84 @@ class AppFixtures extends Fixture
         //### Usuários ###//
 
         $usuario = new Usuario();
-        $usuario->setCpf('55114000098');
+        $usuario->setNip('55114000098');
         $usuario->setNome('Alexandre Viveiros');
         $usuario->setEmail('alexandre.viveiros@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('83019858011');
+        $usuario->setNip('83019858011');
         $usuario->setNome('Anderson Fernandes');
         $usuario->setEmail('anderson.fernandes@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('17076021072');
+        $usuario->setNip('17076021072');
         $usuario->setNome('Filipe Moura');
         $usuario->setEmail('filipe.moura@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('52047808073');
+        $usuario->setNip('52047808073');
         $usuario->setNome('Vanderleia de Figueiredo');
         $usuario->setEmail('vanderleia@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('27947170061');
+        $usuario->setNip('27947170061');
         $usuario->setNome('Arlyson de Almeida');
         $usuario->setEmail('arlyson@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('68204608055');
+        $usuario->setNip('68204608055');
         $usuario->setNome('Paulo Silva');
         $usuario->setEmail('paulo-fernandes.pf@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('89303881087');
+        $usuario->setNip('89303881087');
         $usuario->setNome('Milton Cunha');  
         $usuario->setEmail('milton.cunha@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('71079764003');
+        $usuario->setNip('71079764003');
         $usuario->setNome('Abrahaão Silva');
         $usuario->setEmail('abrahaao.silva@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('34490399030');
+        $usuario->setNip('34490399030');
         $usuario->setNome('Thiago Alves');
         $usuario->setEmail('rodrigues.alves@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('05060825043');
+        $usuario->setNip('05060825043');
         $usuario->setNome('Diego Bastos');
         $usuario->setEmail('d.bastos@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('98101504079');
+        $usuario->setNip('98101504079');
         $usuario->setNome('Leonardo Freire');
         $usuario->setEmail('leonardo-gomes.freire@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $usuario = new Usuario();
-        $usuario->setCpf('02819239064');
+        $usuario->setNip('02819239064');
         $usuario->setNome('Matheus Moraes');
         $usuario->setEmail('nascimento.moraes@marinha.mil.br');
         $usuario->setUnidade($unidadeDAdM);

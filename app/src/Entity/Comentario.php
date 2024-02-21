@@ -38,77 +38,81 @@ class Comentario
     #[Groups(['show_mensagem'])]
     private ?Usuario $usuario = null;
 
-    public function __construct(array $valores, Mensagem $mensagem, Unidade $unidade, Usuario $usuario)
-    {
-        $this->setTexto($valores['texto']);
-        $this->setDataHora(new DateTimeImmutable("now"));
-        $this->setMensagem($mensagem);
-        $this->setUnidade($unidade);
-        $this->setUsuario($usuario);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getTexto(): ?string
-    {
-        return $this->texto;
-    }
-
-    public function setTexto(string $texto): static
+    public function __construct(string $texto, Mensagem $mensagem, Unidade $unidade, Usuario $usuario)
     {
         $this->texto = $texto;
-
-        return $this;
-    }
-
-    public function getDataHora(): ?\DateTimeImmutable
-    {
-        return $this->data_hora;
-    }
-
-    public function setDataHora(\DateTimeImmutable $data_hora): static
-    {
-        $this->data_hora = $data_hora;
-
-        return $this;
-    }
-
-    public function getMensagem(): ?Mensagem
-    {
-        return $this->mensagem;
-    }
-
-    public function setMensagem(?Mensagem $mensagem): static
-    {
+        $this->data_hora = new DateTimeImmutable("now");
         $this->mensagem = $mensagem;
-
-        return $this;
-    }
-
-    public function getUnidade(): ?Unidade
-    {
-        return $this->unidade;
-    }
-
-    public function setUnidade(?Unidade $unidade): static
-    {
-        $this->unidade = $unidade;
-
-        return $this;
-    }
-
-    public function getUsuario(): ?Usuario
-    {
-        return $this->usuario;
-    }
-
-    public function setUsuario(?Usuario $usuario): static
-    {
+        $this->unidade  = $unidade;
         $this->usuario = $usuario;
-
-        return $this;
     }
+
+    public function alterarTexto(string $texto) {
+        $this->texto = $texto;
+    }
+
+    public function getId(): int
+    {
+        return (int) $this->id;
+    }
+
+    // public function getTexto(): ?string
+    // {
+    //     return $this->texto;
+    // }
+
+    // public function setTexto(string $texto): static
+    // {
+    //     $this->texto = $texto;
+
+    //     return $this;
+    // }
+
+    // public function getDataHora(): ?\DateTimeImmutable
+    // {
+    //     return $this->data_hora;
+    // }
+
+    // public function setDataHora(\DateTimeImmutable $data_hora): static
+    // {
+    //     $this->data_hora = $data_hora;
+
+    //     return $this;
+    // }
+
+    // public function getMensagem(): ?Mensagem
+    // {
+    //     return $this->mensagem;
+    // }
+
+    // public function setMensagem(?Mensagem $mensagem): static
+    // {
+    //     $this->mensagem = $mensagem;
+
+    //     return $this;
+    // }
+
+    // public function getUnidade(): ?Unidade
+    // {
+    //     return $this->unidade;
+    // }
+
+    // public function setUnidade(?Unidade $unidade): static
+    // {
+    //     $this->unidade = $unidade;
+
+    //     return $this;
+    // }
+
+    // public function getUsuario(): ?Usuario
+    // {
+    //     return $this->usuario;
+    // }
+
+    // public function setUsuario(?Usuario $usuario): static
+    // {
+    //     $this->usuario = $usuario;
+
+    //     return $this;
+    // }
 }

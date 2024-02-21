@@ -23,29 +23,23 @@ class Tramite
     #[ORM\JoinColumn(nullable: false)]
     private ?Unidade $unidade = null;
 
-    #[ORM\OneToMany(mappedBy: 'tramite', targetEntity: TramiteFuturo::class, orphanRemoval: true)]
-    private Collection $tramite_futuro;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Usuario $usuario_atual = null;
 
-    public function __construct()
-    {
-        $this->tramite_futuro = new ArrayCollection();
-    }
+    #[ORM\OneToMany(mappedBy: 'tramite', targetEntity: TramiteFuturo::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $tramites_futuro;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\OneToMany(mappedBy: 'tramite', targetEntity: TramitePassado::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
+    private Collection $tramites_passado;
 
-    public function getMensagem(): ?Mensagem
-    {
-        return $this->mensagem;
-    }
-
-    public function setMensagem(?Mensagem $mensagem): static
+    public function __construct(Mensagem $mensagem, Unidade $unidade, Usuario $tramiteAtual)
     {
         $this->mensagem = $mensagem;
-
-        return $this;
+        $this->unidade = $unidade;
+        $this->usuario_atual = $tramiteAtual;
+        $this->tramites_futuro = new ArrayCollection();
+        $this->tramites_passado = new ArrayCollection();
     }
 
     public function getUnidade(): ?Unidade
@@ -53,40 +47,61 @@ class Tramite
         return $this->unidade;
     }
 
-    public function setUnidade(?Unidade $unidade): static
-    {
-        $this->unidade = $unidade;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, TramiteFuturo>
      */
-    public function getTramiteFuturo(): Collection
+    public function getTramitesFuturos(): Collection
     {
-        return $this->tramite_futuro;
+        return $this->tramites_futuro;
     }
 
-    public function addTramiteFuturo(TramiteFuturo $tramiteFuturo): static
+    /**
+     * @return TramiteFuturo
+     */
+    public function getProximoTramiteFuturo(): TramiteFuturo
     {
-        if (!$this->tramite_futuro->contains($tramiteFuturo)) {
-            $this->tramite_futuro->add($tramiteFuturo);
-            $tramiteFuturo->setTramite($this);
+        if (count($this->getTramitesFuturos()) == 0) { new \DomainException("Trâmite não definido!");}
+
+        return (object) $this->tramites_futuro[0];
+    }
+
+    public function criarTramiteFuturo(array $usuarios): void {
+        $this->tramites_futuro = new ArrayCollection();
+
+        foreach($usuarios as $chave => $usuario){
+            $tramiteFuturo = new TramiteFuturo($this, $chave+1, $usuario);
+            $this->tramites_futuro->add($tramiteFuturo);
         }
-
-        return $this;
     }
 
-    public function removeTramiteFuturo(TramiteFuturo $tramiteFuturo): static
+    public function getUsuarioAtual(): ?Usuario
     {
-        if ($this->tramite_futuro->removeElement($tramiteFuturo)) {
-            // set the owning side to null (unless already changed)
-            if ($tramiteFuturo->getTramite() === $this) {
-                $tramiteFuturo->setTramite(null);
-            }
-        }
-
-        return $this;
+        return $this->usuario_atual;
     }
+
+    public function encaminharProximo(): void {
+
+        if(count($this->tramites_futuro) == 0) {throw new \DomainException("Não existe próximo no trâmite");}
+
+        //Usuário tramite atual passa a ser do trâmite passado.
+        $tramitePassado = new TramitePassado($this, $this->getUsuarioAtual());
+        $this->tramites_passado->add($tramitePassado);
+
+        //Próximo usuário do trâmite passa a ser o atual.
+        $this->usuario_atual = $this->getProximoTramiteFuturo()->getUsuario();
+
+        //Remover proximo item do trâmite futuro, pois virou o atual.
+        $this->tramites_futuro->removeElement($this->getProximoTramiteFuturo());
+    }
+
+    public function encaminharPara(Usuario $usuario): void {
+        
+        //Usuário tramite atual passa a ser do trâmite passado.
+        $tramitePassado = new TramitePassado($this, $this->getUsuarioAtual());
+        $this->tramites_passado->add($tramitePassado);
+
+        //Próximo usuário do trâmite passa a ser o enviado por parâmetro.
+        $this->usuario_atual = $usuario;
+    }
+
 }

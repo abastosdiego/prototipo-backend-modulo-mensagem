@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Mensagem;
 use App\Entity\Unidade;
+use App\Entity\Usuario;
 use App\Repository\MensagemRepository;
 use App\Repository\UnidadeRepository;
+use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -19,14 +21,19 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/mensagem')]
 class MensagemController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager, private SerializerInterface $serializer, private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository, private LoggerInterface $logger){}
+    private Usuario $usuarioLogado;
 
-    #[Route('/unidade/{siglaUnidade}', name: 'app_mensagem_index', methods: ['GET'])]
-    public function index(string $siglaUnidade) : JsonResponse
+    public function __construct(private EntityManagerInterface $entityManager, private SerializerInterface $serializer, private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository, private UsuarioRepository $usuarioRepository, private LoggerInterface $logger) {
+        // Pegar usuário logado //
+        $idUsuario = 12;
+        $this->usuarioLogado = $this->usuarioRepository->find($idUsuario);
+        //$this->usuarioLogado->getUnidade()->getId()
+    }
+
+    #[Route('/', name: 'app_mensagem_index', methods: ['GET'])]
+    public function index() : JsonResponse
     {
-        $unidade = $this->unidadeRepository->findOneBy(['sigla' => $siglaUnidade]);
-
-        $mensagens = $this->mensagemRepository->findBy(['unidadeOrigem' => $unidade->getId()]);
+        $mensagens = $this->mensagemRepository->findBy(['unidadeOrigem' => $this->usuarioLogado->getUnidade()->getId()]);
         
         $context = (new ObjectNormalizerContextBuilder())
             ->withGroups('show_mensagem')
@@ -48,11 +55,10 @@ class MensagemController extends AbstractController
     #[Route('', name: 'app_mensagem_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $unidadeOrigem = $this->getUnidadeOrigemByRequest($request);
         $unidadesDestino = $this->getUnidadesDestinoByRequest($request);
         $unidadesInformacao = $this->getUnidadesInformacaoByRequest($request);
         
-        $mensagem = new Mensagem($request->toArray(), $unidadeOrigem, $unidadesDestino, $unidadesInformacao);
+        $mensagem = new Mensagem($request->toArray(), $this->usuarioLogado->getUnidade(), $unidadesDestino, $unidadesInformacao);
 
         // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
         $entityManager->persist($mensagem);
@@ -69,11 +75,10 @@ class MensagemController extends AbstractController
     #[Route('/{mensagem}', name: 'app_mensagem_edit', methods: ['PUT'])]
     public function edit(Request $request, Mensagem $mensagem): JsonResponse
     {
-        $unidadeOrigem = $this->getUnidadeOrigemByRequest($request);
         $unidadesDestino = $this->getUnidadesDestinoByRequest($request);
         $unidadesInformacao = $this->getUnidadesInformacaoByRequest($request);
 
-        $mensagem->alterarValores($request->toArray(), $unidadeOrigem, $unidadesDestino, $unidadesInformacao);
+        $mensagem->carregarValores($request->toArray(), $unidadesDestino, $unidadesInformacao);
 
         // Efetua as alterações no banco de dados
         $this->entityManager->flush();
@@ -95,14 +100,6 @@ class MensagemController extends AbstractController
                 ['mensagem' => 'excluído com sucesso!']
             );
         }
-    }
-
-    private function getUnidadeOrigemByRequest(Request $request) : Unidade | null {
-        $unidadeOrigem = null;
-        if (isset($request->toArray()['unidadeOrigemSigla'])) {
-            $unidadeOrigem = $this->unidadeRepository->findOneBy(['sigla' => $request->toArray()['unidadeOrigemSigla']]);
-        }
-        return $unidadeOrigem;
     }
 
     private function getUnidadesDestinoByRequest(Request $request) : array {

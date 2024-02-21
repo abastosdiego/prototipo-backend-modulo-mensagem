@@ -2,32 +2,36 @@
 
 namespace App\Controller;
 
-use App\Entity\Comentario;
+use App\Entity\Usuario;
 use App\Repository\MensagemRepository;
 use App\Repository\UnidadeRepository;
 use App\Repository\UsuarioRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/comentario')]
+#[Route('/mensagem/comentario')]
 class ComentarioController extends AbstractController
 {
-    public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository, private UsuarioRepository $usuarioRepository){}
+    private Usuario $usuarioLogado;
+    
+    public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository, private UnidadeRepository $unidadeRepository, private UsuarioRepository $usuarioRepository) {
+        // Pegar usuário logado //
+        $idUsuario = 12;
+        $this->usuarioLogado = $this->usuarioRepository->find($idUsuario);
+        //$this->usuarioLogado->getUnidade()->getId()
+    }
 
-    #[Route('/{idMensagem}/{idUsuario}', name: 'app_comentario_new', methods: ['POST'])]
-    public function new(Request $request, int $idMensagem, int $idUsuario): JsonResponse
+    #[Route('/{idMensagem}', name: 'app_comentario_new', methods: ['POST'])]
+    public function new(Request $request, int $idMensagem): JsonResponse
     {
         $mensagem = $this->mensagemRepository->find($idMensagem);
-        $usuario = $this->usuarioRepository->find($idUsuario);
-        $unidade = $usuario->getUnidade();
 
-        $comentario = new Comentario($request->toArray(), $mensagem, $unidade, $usuario);
+        $texto = $request->toArray()['texto'];
 
-        $mensagem->addComentario($comentario);
+        $comentario = $mensagem->addComentario($texto, $this->usuarioLogado);
 
         ///// Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
         $this->entityManager->persist($mensagem);
@@ -36,36 +40,38 @@ class ComentarioController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(
-            ['mensagem' => 'cadastrado com sucesso!']
+            ['mensagem' => 'Comentário cadastrado com sucesso!',
+            'idComentario' => $comentario->getId()]
         );
     }
 
-    #[Route('/{comentario}', name: 'app_comentario_edit', methods: ['PUT'])]
-    public function edit(Request $request, Comentario $comentario): JsonResponse
+    #[Route('/{idMensagem}/{idComentario}', name: 'app_comentario_edit', methods: ['PUT'])]
+    public function edit(Request $request, int $idMensagem, int $idComentario): JsonResponse
     {
-        $comentario->setTexto($request->toArray()['texto']);
-        $comentario->setDataHora(new DateTimeImmutable("now"));
+        $mensagem = $this->mensagemRepository->find($idMensagem);
+        $comentario = $mensagem->getComentario($idComentario);
+        $comentario->alterarTexto($request->toArray()['texto']);
 
         // Efetua as alterações no banco de dados
         $this->entityManager->flush();
 
         return $this->json(
-            ['mensagem' => 'atualizado com sucesso!']
+            ['mensagem' => 'Comentário alterado com sucesso!']
         );
     }
 
-    #[Route('/{comentario}', name: 'app_comentario_delete', methods: ['DELETE'])]
-    public function delete(Comentario $comentario): JsonResponse
+    #[Route('/{idMensagem}/{idComentario}', name: 'app_comentario_delete', methods: ['DELETE'])]
+    public function delete(int $idMensagem, int $idComentario): JsonResponse
     {
-        if ($comentario){
+        $mensagem = $this->mensagemRepository->find($idMensagem);
+        $mensagem->removeComentario($idComentario);
 
-            $this->entityManager->remove($comentario);
-            $this->entityManager->flush();
+        // Efetua as alterações no banco de dados
+        $this->entityManager->flush();
 
-            return $this->json(
-                ['mensagem' => 'excluído com sucesso!']
-            );
-        }
+        return $this->json(
+            ['mensagem' => 'Comentário excluído com sucesso!']
+        );
     }
 
 }

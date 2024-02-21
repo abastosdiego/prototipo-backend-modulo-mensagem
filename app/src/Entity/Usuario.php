@@ -16,7 +16,7 @@ class Usuario
     private ?int $id = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $cpf = null;
+    private ?string $nip = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['show_mensagem'])]
@@ -34,14 +34,14 @@ class Usuario
         return $this->id;
     }
 
-    public function getCpf(): ?string
+    public function getNip(): ?string
     {
-        return $this->cpf;
+        return $this->nip;
     }
 
-    public function setCpf(string $cpf): static
+    public function setNip(string $nip): static
     {
-        $this->cpf = $cpf;
+        $this->nip = $nip;
 
         return $this;
     }
