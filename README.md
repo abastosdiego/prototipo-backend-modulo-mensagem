@@ -31,7 +31,7 @@ http://localhost:8123/api/usuario/unidade/{siglaUnidade}
 
 # Mensagem
 # GET
-http://localhost:8123/api/mensagem/unidade/{siglaUnidade}
+http://localhost:8123/api/mensagem
 <br />
 ou
 <br />
@@ -47,7 +47,6 @@ http://localhost:8123/api/mensagem
     "sigilo": "Ostensivo",
     "prazo": "20240131",
     "observacao": "Observação",
-    "unidadeOrigemSigla": "SGM",
     "unidadesDestinoSiglas" : ["DAdM","DFM"],
     "unidadesInformacaoSiglas" : ["DGOM"]
 }
@@ -62,7 +61,6 @@ http://localhost:8123/api/mensagem/{idMensagem}
     "sigilo": "Ostensivo",
     "prazo": "20240131",
     "observacao": "Observação",
-    "unidadeOrigemSigla": "SGM",
     "unidadesDestinoSiglas" : ["DAdM","DFM"],
     "unidadesInformacaoSiglas" : ["DGOM"]
 }
@@ -78,7 +76,7 @@ http://localhost:8123/api/mensagem/{idMensagem}
 (Via API de mensagem)
 
 # POST
-http://localhost:8123/api/comentario/{idMensagem}/{idUsuario}
+http://localhost:8123/api/mensagem/comentario/{idMensagem}
 
 <br />
 {
@@ -86,9 +84,43 @@ http://localhost:8123/api/comentario/{idMensagem}/{idUsuario}
 }
 
 # PUT
-http://localhost:8123/api/comentario/{idComentario}
+http://localhost:8123/api/mensagem/comentario/{idMensagem}/{idComentario}
 
 <br />
 {
     "texto": "texto do comentário"
+}
+
+# DELETE
+http://localhost:8123/api/mensagem/comentario/{idMensagem}/{idComentario}
+
+
+# Trâmites
+
+# POST
+http://localhost:8123/api/mensagem/tramite/{idMensagem}
+
+<br />
+{
+    "tramite_futuro": ["27947170061","83019858011","55114000098"]
+}
+
+# PUT
+http://localhost:8123/api/mensagem/tramite/alterar/{idMensagem}
+
+<br />
+{
+    "tramite_futuro": ["27947170061","89303881087","83019858011","55114000098"]
+}
+
+# PUT
+http://localhost:8123/api/mensagem/tramite/encaminhar/{idMensagem}
+
+
+# PUT
+http://localhost:8123/api/mensagem/tramite/encaminhar-para/{idMensagem}
+
+<br />
+{
+    "usuario": "05060825043"
 }
