@@ -31,7 +31,7 @@ class MensagemController extends AbstractController
     #[Route('/', name: 'app_mensagem_index', methods: ['GET'])]
     public function index() : JsonResponse
     {
-        $mensagens = $this->mensagemRepository->findBy(['unidadeOrigem' => $this->usuarioLogado->getUnidade()->getId()]);
+        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId()]);
 
         foreach($mensagens as $mensagem) {
 
