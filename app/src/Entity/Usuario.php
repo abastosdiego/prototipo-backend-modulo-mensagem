@@ -16,6 +16,7 @@ class Usuario
     private ?int $id = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['show_mensagem'])]
     private ?string $nip = null;
 
     #[ORM\Column(length: 100)]

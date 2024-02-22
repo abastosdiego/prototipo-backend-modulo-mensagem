@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Mensagem;
-use App\Entity\Unidade;
 use App\Entity\Usuario;
 use App\Repository\MensagemRepository;
 use App\Repository\UnidadeRepository;
 use App\Repository\UsuarioRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +32,18 @@ class MensagemController extends AbstractController
     public function index() : JsonResponse
     {
         $mensagens = $this->mensagemRepository->findBy(['unidadeOrigem' => $this->usuarioLogado->getUnidade()->getId()]);
-        
+
+        foreach($mensagens as $mensagem) {
+
+            //Remove do objeto $mensagem os trâmites que não são da OM do usuário. Pois ele não tem acesso de visualização desses tramites.
+            $this->entityManager->detach($mensagem);
+            foreach($mensagem->getTramites() as $tramite) {
+                if ($tramite->getUnidade()->getId() !== $this->usuarioLogado->getUnidade()->getId()) {
+                    $mensagem->getTramites()->removeElement($tramite);
+                }
+            }
+        }
+
         $context = (new ObjectNormalizerContextBuilder())
             ->withGroups('show_mensagem')
             ->toArray();
@@ -42,9 +51,19 @@ class MensagemController extends AbstractController
         return JsonResponse::fromJsonString($this->serializer->serialize($mensagens, 'json', $context));
     }
 
-    #[Route('/{id}', name: 'app_mensagem_show', methods: ['GET'])]
-    public function show(Mensagem $mensagem): JsonResponse
+    #[Route('/{idMensagem}', name: 'app_mensagem_show', methods: ['GET'])]
+    public function show(int $idMensagem): JsonResponse
     {
+        $mensagem = $this->mensagemRepository->find($idMensagem);
+
+        //Remove do objeto $mensagem os trâmites que não são da OM do usuário. Pois ele não tem acesso de visualização desses tramites.
+        $this->entityManager->detach($mensagem);
+        foreach($mensagem->getTramites() as $tramite) {
+            if ($tramite->getUnidade()->getId() !== $this->usuarioLogado->getUnidade()->getId()) {
+                $mensagem->getTramites()->removeElement($tramite);
+            }
+        }
+
         $context = (new ObjectNormalizerContextBuilder())
             ->withGroups('show_mensagem')
             ->toArray();
@@ -53,7 +72,7 @@ class MensagemController extends AbstractController
     }
 
     #[Route('', name: 'app_mensagem_new', methods: ['POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function new(Request $request): JsonResponse
     {
         $unidadesDestino = $this->getUnidadesDestinoByRequest($request);
         $unidadesInformacao = $this->getUnidadesInformacaoByRequest($request);
@@ -61,10 +80,10 @@ class MensagemController extends AbstractController
         $mensagem = new Mensagem($request->toArray(), $this->usuarioLogado->getUnidade(), $unidadesDestino, $unidadesInformacao);
 
         // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
-        $entityManager->persist($mensagem);
+        $this->entityManager->persist($mensagem);
 
         // Efetua as alterações no banco de dados
-        $entityManager->flush();
+        $this->entityManager->flush();
 
         return $this->json(
             ['mensagem' => 'cadastrado com sucesso!',
@@ -72,9 +91,11 @@ class MensagemController extends AbstractController
         );
     }
 
-    #[Route('/{mensagem}', name: 'app_mensagem_edit', methods: ['PUT'])]
-    public function edit(Request $request, Mensagem $mensagem): JsonResponse
+    #[Route('/{idMensagem}', name: 'app_mensagem_edit', methods: ['PUT'])]
+    public function edit(Request $request, int $idMensagem): JsonResponse
     {
+        $mensagem = $this->mensagemRepository->find($idMensagem);
+
         $unidadesDestino = $this->getUnidadesDestinoByRequest($request);
         $unidadesInformacao = $this->getUnidadesInformacaoByRequest($request);
 
@@ -88,9 +109,11 @@ class MensagemController extends AbstractController
         );
     }
 
-    #[Route('/{mensagem}', name: 'app_mensagem_delete', methods: ['DELETE'])]
-    public function delete(Request $request, Mensagem $mensagem): JsonResponse
+    #[Route('/{idMensagem}', name: 'app_mensagem_delete', methods: ['DELETE'])]
+    public function delete(int $idMensagem): JsonResponse
     {
+        $mensagem = $this->mensagemRepository->find($idMensagem);
+
         if ($mensagem){
 
             $this->entityManager->remove($mensagem);
@@ -108,8 +131,6 @@ class MensagemController extends AbstractController
 
         if (isset($unidadesDestinoSiglas)) {
             foreach($unidadesDestinoSiglas as $sigla) {
-
-                //$this->logger->debug('sigla: '.$sigla);
 
                 $unidade = $this->unidadeRepository->findOneBy(['sigla' => $sigla]);
                 array_push($unidadesDestino, $unidade);

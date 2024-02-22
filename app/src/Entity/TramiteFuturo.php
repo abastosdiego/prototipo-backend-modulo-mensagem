@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TramiteFuturoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TramiteFuturoRepository::class)]
 class TramiteFuturo
@@ -23,6 +24,7 @@ class TramiteFuturo
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_mensagem'])]
     private ?Usuario $usuario = null;
 
     public function __construct(Tramite $tramite, int $ordem, Usuario $usuario) {

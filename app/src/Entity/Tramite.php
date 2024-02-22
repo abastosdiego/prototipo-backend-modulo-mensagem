@@ -6,6 +6,7 @@ use App\Repository\TramiteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TramiteRepository::class)]
 class Tramite
@@ -21,16 +22,20 @@ class Tramite
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_mensagem'])]
     private ?Unidade $unidade = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_mensagem'])]
     private ?Usuario $usuario_atual = null;
 
     #[ORM\OneToMany(mappedBy: 'tramite', targetEntity: TramiteFuturo::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[Groups(['show_mensagem'])]
     private Collection $tramites_futuro;
 
     #[ORM\OneToMany(mappedBy: 'tramite', targetEntity: TramitePassado::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[Groups(['show_mensagem'])]
     private Collection $tramites_passado;
 
     public function __construct(Mensagem $mensagem, Unidade $unidade, Usuario $tramiteAtual)
@@ -50,9 +55,17 @@ class Tramite
     /**
      * @return Collection<int, TramiteFuturo>
      */
-    public function getTramitesFuturos(): Collection
+    public function getTramitesFuturo(): Collection
     {
         return $this->tramites_futuro;
+    }
+
+    /**
+     * @return Collection<int, TramitePassado>
+     */
+    public function getTramitesPassado(): Collection
+    {
+        return $this->tramites_passado;
     }
 
     /**
@@ -60,7 +73,7 @@ class Tramite
      */
     public function getProximoTramiteFuturo(): TramiteFuturo
     {
-        if (count($this->getTramitesFuturos()) == 0) { new \DomainException("Trâmite não definido!");}
+        if (count($this->getTramitesFuturo()) == 0) { new \DomainException("Trâmite não definido!");}
 
         return (object) $this->tramites_futuro[0];
     }

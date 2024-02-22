@@ -43,7 +43,7 @@ class Mensagem
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $data_autorizacao = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mensagensOrigem')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Unidade $unidade_origem = null;
 
@@ -55,18 +55,18 @@ class Mensagem
     #[ORM\JoinTable(name: "mensagem_unidades_informacao")]
     private Collection $unidades_informacao;
 
-    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class, cascade: ['persist'])]
     private Collection $tramites;
 
-    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
     private Collection $comentarios;
 
     public function __construct(array $valores, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao)
     {
-        $this->setUnidadeOrigem($unidadeOrigem);
+        $this->unidade_origem = $unidadeOrigem;
         $this->unidades_destino = new ArrayCollection();
         $this->unidades_informacao = new ArrayCollection();
-        $this->setDataEntrada(new \DateTime('now'));
+        $this->data_entrada = new \DateTime('now');
 
         $this->carregarValores($valores, $unidadesDestino, $unidadesInformacao);
         $this->tramites = new ArrayCollection();
@@ -75,31 +75,31 @@ class Mensagem
 
     public function carregarValores(array $valores, array $unidadesDestino, array $unidadesInformacao) {
         if(isset($valores['data_hora'])) {
-            $this->setDataHora($valores['data_hora']);
+            $this->data_hora = $valores['data_hora'];
         } else {
-            $this->setDataHora('R000000Z/JAN/2024');
+            $this->data_hora = 'R000000Z/JAN/2024';
         }
 
         if(isset($valores['assunto'])) {
-            $this->setAssunto($valores['assunto']);
+            $this->assunto = $valores['assunto'];
         }
 
         if(isset($valores['texto'])) {
-            $this->setTexto($valores['texto']);
+            $this->texto = $valores['texto'];
         }
 
         if(isset($valores['observacao'])) {
-            $this->setObservacao($valores['observacao']);
+            $this->observacao = $valores['observacao'];
         }
 
         if(isset($valores['sigilo'])) {
-            $this->setSigilo($valores['sigilo']);
+            $this->sigilo = $valores['sigilo'];
         }
 
         if(isset($valores['prazo'])) {
-            $this->setPrazo(new \DateTime($valores['prazo']));
+            $this->prazo = new \DateTime($valores['prazo']);
         } else {
-            $this->setPrazo(null);
+            $this->prazo = null;
         }
         
         $this->unidades_destino = new ArrayCollection();
@@ -114,110 +114,45 @@ class Mensagem
 
     }
 
-    public function getId(): ?int
-    {
+    public function getId() {
         return $this->id;
     }
 
-
-    public function getDataHora(): ?string
-    {
+    public function getDataHora() {
         return $this->data_hora;
     }
 
-    private function setDataHora(string $data_hora): static
-    {
-        $this->data_hora = $data_hora;
-
-        return $this;
-    }
-
-    public function getAssunto(): ?string
-    {
+    public function getAssunto() {
         return $this->assunto;
     }
 
-    public function setAssunto(string $assunto): static
-    {
-        $this->assunto = $assunto;
-
-        return $this;
-    }
-
-    public function getTexto(): ?string
-    {
+    public function getTexto() {
         return $this->texto;
     }
 
-    public function setTexto(string $texto): static
-    {
-        $this->texto = $texto;
-
-        return $this;
-    }
-
-    public function getObservacao(): ?string
-    {
+    public function getObservacao() {
         return $this->observacao;
     }
 
-    public function setObservacao(?string $observacao): static
-    {
-        $this->observacao = $observacao;
-
-        return $this;
-    }
-
-    public function getDataEntrada(): ?\DateTimeInterface
-    {
+    public function getDataEntrada() {
         return $this->data_entrada;
     }
 
-    private function setDataEntrada(\DateTimeInterface $data_entrada): static
-    {
-        $this->data_entrada = $data_entrada;
-
-        return $this;
-    }
-
-    public function getSigilo(): ?string
-    {
+    public function getSigilo() {
         return $this->sigilo;
     }
 
-    public function setSigilo(string $sigilo): static
-    {
-        $this->sigilo = $sigilo;
-
-        return $this;
-    }
-
-    public function getPrazo(): ?\DateTimeInterface
-    {
+    public function getPrazo() {
         return $this->prazo;
     }
 
-    public function setPrazo(?\DateTimeInterface $prazo): static
-    {
-        $this->prazo = $prazo;
-
-        return $this;
+    public function getDataAutorizacao() {
+        return $this->data_autorizacao;
     }
 
     public function getUnidadeOrigem(): ?Unidade
     {
         return $this->unidade_origem;
-    }
-
-    public function setUnidadeOrigem(?Unidade $unidadeOrigem): static
-    {
-        $this->unidade_origem = $unidadeOrigem;
-
-        return $this;
-    }
-
-    public function getDataAutorizacao() {
-        return $this->data_autorizacao;
     }
 
     public function setAutorizado() {
@@ -341,4 +276,5 @@ class Mensagem
         $comentario = $this->getComentario($idComentario);
         $this->comentarios->removeElement($comentario);
     }
+
 }

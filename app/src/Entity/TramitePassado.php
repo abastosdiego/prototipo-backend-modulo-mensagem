@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TramitePassadoRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TramitePassadoRepository::class)]
 class TramitePassado
@@ -23,6 +24,7 @@ class TramitePassado
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_mensagem'])]
     private ?Usuario $usuario = null;
 
     public function __construct(Tramite $tramite, Usuario $usuario)
