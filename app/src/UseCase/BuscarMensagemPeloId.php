@@ -6,7 +6,7 @@ use App\Repository\MensagemRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ListarMensagens {
+class BuscarMensagemPeloId {
     private int $idUnidadeUsuarioLogado;
 
     public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository, private UsuarioRepository $usuarioRepository)
@@ -18,22 +18,19 @@ class ListarMensagens {
                                             ->getId();
     }
 
-    public function executar(): array {
+    public function executar(int $idMensagem) {
         //$this->entityManager = $entityManager;
 
-        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->idUnidadeUsuarioLogado]);
+        $mensagem = $this->mensagemRepository->find($idMensagem);
 
-        foreach($mensagens as $mensagem) {
-
-            //Remove do objeto $mensagem os trâmites que não são da OM do usuário. Pois ele não tem acesso de visualização desses tramites.
-            $this->entityManager->detach($mensagem);
-            foreach($mensagem->getTramites() as $tramite) {
-                if ($tramite->getUnidade()->getId() !== $this->idUnidadeUsuarioLogado) {
-                    $mensagem->getTramites()->removeElement($tramite);
-                }
+        //Remove do objeto $mensagem os trâmites que não são da OM do usuário. Pois ele não tem acesso de visualização desses tramites.
+        $this->entityManager->detach($mensagem);
+        foreach($mensagem->getTramites() as $tramite) {
+            if ($tramite->getUnidade()->getId() !== $this->idUnidadeUsuarioLogado) {
+                $mensagem->getTramites()->removeElement($tramite);
             }
         }
 
-        return $mensagens;
+        return $mensagem;
     }
 }

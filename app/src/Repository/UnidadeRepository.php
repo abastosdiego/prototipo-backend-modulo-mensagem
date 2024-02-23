@@ -21,6 +21,22 @@ class UnidadeRepository extends ServiceEntityRepository
         parent::__construct($registry, Unidade::class);
     }
 
+    /**
+     * @return Unidade[] Returns an array of Unidade objects
+     */
+    public function getUnidadesPelasSiglas(array $siglas): array
+    {
+        $unidades = [];
+        
+        if (isset($siglas)) {
+            foreach($siglas as $sigla) {
+                $unidade = $this->findOneBy(['sigla' => $sigla]);
+                array_push($unidades, $unidade);
+            }
+        }
+        return $unidades;
+    }
+
 //    /**
 //     * @return Unidade[] Returns an array of Unidade objects
 //     */

@@ -61,43 +61,43 @@ class Mensagem
     #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
     private Collection $comentarios;
 
-    public function __construct(array $valores, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao)
+    public function __construct(array $inputData, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao)
     {
         $this->unidade_origem = $unidadeOrigem;
         $this->unidades_destino = new ArrayCollection();
         $this->unidades_informacao = new ArrayCollection();
         $this->data_entrada = new \DateTime('now');
 
-        $this->carregarValores($valores, $unidadesDestino, $unidadesInformacao);
+        $this->carregarValores($inputData, $unidadesDestino, $unidadesInformacao);
         $this->tramites = new ArrayCollection();
         $this->comentarios = new ArrayCollection();
     }
 
-    public function carregarValores(array $valores, array $unidadesDestino, array $unidadesInformacao) {
-        if(isset($valores['data_hora'])) {
-            $this->data_hora = $valores['data_hora'];
+    public function carregarValores(array $inputData, array $unidadesDestino, array $unidadesInformacao) {
+        if(isset($inputData['data_hora'])) {
+            $this->data_hora = $inputData['data_hora'];
         } else {
             $this->data_hora = 'R000000Z/JAN/2024';
         }
 
-        if(isset($valores['assunto'])) {
-            $this->assunto = $valores['assunto'];
+        if(isset($inputData['assunto'])) {
+            $this->assunto = $inputData['assunto'];
         }
 
-        if(isset($valores['texto'])) {
-            $this->texto = $valores['texto'];
+        if(isset($inputData['texto'])) {
+            $this->texto = $inputData['texto'];
         }
 
-        if(isset($valores['observacao'])) {
-            $this->observacao = $valores['observacao'];
+        if(isset($inputData['observacao'])) {
+            $this->observacao = $inputData['observacao'];
         }
 
-        if(isset($valores['sigilo'])) {
-            $this->sigilo = $valores['sigilo'];
+        if(isset($inputData['sigilo'])) {
+            $this->sigilo = $inputData['sigilo'];
         }
 
-        if(isset($valores['prazo'])) {
-            $this->prazo = new \DateTime($valores['prazo']);
+        if(isset($inputData['prazo'])) {
+            $this->prazo = new \DateTime($inputData['prazo']);
         } else {
             $this->prazo = null;
         }
