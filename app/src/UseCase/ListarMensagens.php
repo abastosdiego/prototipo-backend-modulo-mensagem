@@ -19,7 +19,6 @@ class ListarMensagens {
     }
 
     public function executar(): array {
-        //$this->entityManager = $entityManager;
 
         $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->idUnidadeUsuarioLogado]);
 

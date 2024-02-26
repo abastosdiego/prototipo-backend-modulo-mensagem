@@ -25,11 +25,10 @@ class AppFixtures extends Fixture
         $statusCode = $response->getStatusCode();
 
         foreach($response->toArray() as $item){
-
             $unidade = new Unidade();
             $unidade->setSigla($item["sigla"]);
             $unidade->setNome($item["nome"]);
-            
+        
             if($item["sigla"] == "DAdM") {
                 $unidadeDAdM = $unidade;
             }
@@ -37,6 +36,13 @@ class AppFixtures extends Fixture
             // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
             $manager->persist($unidade);
         }
+
+        // $unidadeDAdM = new Unidade();
+        // $unidadeDAdM->setSigla('DAdM');
+        // $unidadeDAdM->setNome('Diretoria de Administração da Marinha');
+
+        // // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
+        // $manager->persist($unidadeDAdM);
 
         // Efetua as alterações no banco de dados
         $manager->flush();

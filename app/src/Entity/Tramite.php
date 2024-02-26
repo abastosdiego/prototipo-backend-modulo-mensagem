@@ -105,6 +105,9 @@ class Tramite
 
         //Remover proximo item do trâmite futuro, pois virou o atual.
         $this->tramites_futuro->removeElement($this->getProximoTramiteFuturo());
+
+        //Ao encaminhar, a mensagem deixa de ser rascunho
+        $this->mensagem->sairRascunho();
     }
 
     public function encaminharPara(Usuario $usuario): void {
@@ -115,6 +118,9 @@ class Tramite
 
         //Próximo usuário do trâmite passa a ser o enviado por parâmetro.
         $this->usuario_atual = $usuario;
+
+        //Ao encaminhar, a mensagem deixa de ser rascunho
+        $this->mensagem->sairRascunho();
     }
 
 }

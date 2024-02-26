@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DomainException;
+use PhpParser\Node\Stmt\TryCatch;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MensagemRepository::class)]
@@ -61,12 +63,16 @@ class Mensagem
     #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
     private Collection $comentarios;
 
-    public function __construct(array $inputData, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao)
+    #[ORM\Column]
+    private ?bool $rascunho = null;
+
+    public function __construct(array $inputData, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao = array())
     {
         $this->unidade_origem = $unidadeOrigem;
         $this->unidades_destino = new ArrayCollection();
         $this->unidades_informacao = new ArrayCollection();
         $this->data_entrada = new \DateTime('now');
+        $this->rascunho = true;
 
         $this->carregarValores($inputData, $unidadesDestino, $unidadesInformacao);
         $this->tramites = new ArrayCollection();
@@ -74,11 +80,8 @@ class Mensagem
     }
 
     public function carregarValores(array $inputData, array $unidadesDestino, array $unidadesInformacao) {
-        if(isset($inputData['data_hora'])) {
-            $this->data_hora = $inputData['data_hora'];
-        } else {
-            $this->data_hora = 'R000000Z/JAN/2024';
-        }
+
+        $this->criarDataHora();
 
         if(isset($inputData['assunto'])) {
             $this->assunto = $inputData['assunto'];
@@ -97,13 +100,18 @@ class Mensagem
         }
 
         if(isset($inputData['prazo'])) {
-            $this->prazo = new \DateTime($inputData['prazo']);
+            try{
+                $this->prazo = new \DateTime($inputData['prazo']);
+            } catch (\Exception $ex) {
+                throw new \DomainException('Prazo inválido');
+            }
         } else {
             $this->prazo = null;
         }
         
         $this->unidades_destino = new ArrayCollection();
         foreach($unidadesDestino as $unidade) {
+            if ($unidade === null) {throw new DomainException('Unidade destino inválida!');}
             $this->addUnidadesDestino($unidade);
         }
 
@@ -142,7 +150,7 @@ class Mensagem
         return $this->sigilo;
     }
 
-    public function getPrazo() {
+    public function getPrazo(): ?\DateTimeInterface {
         return $this->prazo;
     }
 
@@ -150,13 +158,45 @@ class Mensagem
         return $this->data_autorizacao;
     }
 
+    public function isAutorizado() {
+        if ($this->data_autorizacao) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function getUnidadeOrigem(): ?Unidade
     {
         return $this->unidade_origem;
     }
 
-    public function setAutorizado() {
+    public function isRascunho(): ?bool
+    {
+        return $this->rascunho;
+    }
+
+    public function sairRascunho() {
+        $this->rascunho = false;
+    }
+
+    public function autorizar() {
+        if($this->data_autorizacao !== null) {throw new \DomainException('Mensagem já foi autorizada!');}
+        if(count($this->unidades_destino) === 0) {throw new \DomainException('Mensagem sem destino não pode ser autorizada!');}
+
         $this->data_autorizacao = new DateTime('now');
+    }
+
+    private function criarDataHora() {
+        $dataHoje = new \DateTime('now');
+        $dia = $dataHoje->format('d');
+        $meses = array('JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ');
+        $mes = $meses[$dataHoje->format('n') - 1];
+        $ano = $dataHoje->format('Y');
+        $hora = $dataHoje->format('G');
+        $minuto = $dataHoje->format('i');
+
+        $this->data_hora = 'R' . $dia . $hora . $minuto . 'Z/'. $mes . '/' . $ano;
     }
 
     /**

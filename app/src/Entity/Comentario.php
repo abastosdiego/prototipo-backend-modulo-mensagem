@@ -55,5 +55,21 @@ class Comentario
     {
         return (int) $this->id;
     }
+
+    public function getTexto() {
+        return $this->texto;
+    }
+
+    public function getDataHora() {
+        return $this->data_hora;
+    }
+
+    public function getUnidade() {
+        return $this->unidade;
+    }
+
+    public function getUsuario() {
+        return $this->usuario;
+    }
     
 }
