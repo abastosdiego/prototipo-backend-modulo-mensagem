@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\UseCase\AlterarMensagem;
+use App\UseCase\ListarMensagens;
 use App\UseCase\BuscarMensagemPeloId;
 use App\UseCase\CadastrarMensagem;
+use App\UseCase\AlterarMensagem;
 use App\UseCase\ExcluirMensagem;
-use App\UseCase\ListarMensagens;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
