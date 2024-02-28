@@ -92,7 +92,7 @@ class Tramite
         return $this->usuario_atual;
     }
 
-    public function encaminharProximo(): void {
+    public function encaminhar(): void {
 
         if(count($this->tramites_futuro) == 0) {throw new \DomainException("Não existe próximo no trâmite");}
 

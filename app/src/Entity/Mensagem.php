@@ -21,7 +21,7 @@ class Mensagem
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 17)]
+    #[ORM\Column(length: 17, nullable: true)]
     private ?string $data_hora = null;
 
     #[ORM\Column(length: 100)]
@@ -80,8 +80,6 @@ class Mensagem
     }
 
     public function carregarValores(array $inputData, array $unidadesDestino, array $unidadesInformacao) {
-
-        $this->criarDataHora();
 
         if(isset($inputData['assunto'])) {
             $this->assunto = $inputData['assunto'];
@@ -184,11 +182,12 @@ class Mensagem
         if($this->data_autorizacao !== null) {throw new \DomainException('Mensagem já foi autorizada!');}
         if(count($this->unidades_destino) === 0) {throw new \DomainException('Mensagem sem destino não pode ser autorizada!');}
 
-        $this->data_autorizacao = new DateTime('now');
+        $dataHoje = new DateTime('now');
+        $this->data_autorizacao = $dataHoje;
+        $this->criarDataHora($dataHoje);
     }
 
-    private function criarDataHora() {
-        $dataHoje = new \DateTime('now');
+    private function criarDataHora($dataHoje) {
         $dia = $dataHoje->format('d');
         $meses = array('JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ');
         $mes = $meses[$dataHoje->format('n') - 1];

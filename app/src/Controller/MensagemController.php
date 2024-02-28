@@ -6,6 +6,7 @@ use App\UseCase\ListarMensagens;
 use App\UseCase\BuscarMensagemPeloId;
 use App\UseCase\CadastrarMensagem;
 use App\UseCase\AlterarMensagem;
+use App\UseCase\AutorizarMensagem;
 use App\UseCase\ExcluirMensagem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,7 +49,7 @@ class MensagemController extends AbstractController
         $idMensagem = $cadastrarMensagem->executar($inputData);
 
         return $this->json(
-            ['mensagem' => 'cadastrado com sucesso!',
+            ['mensagem' => 'Mensagem cadastrada com sucesso!',
             'idMensagem' => $idMensagem]
         );
     }
@@ -60,7 +61,17 @@ class MensagemController extends AbstractController
         $alterarMensagem->executar($idMensagem, $inputData);
 
         return $this->json(
-            ['mensagem' => 'atualizado com sucesso!']
+            ['mensagem' => 'Mensagem atualizada com sucesso!']
+        );
+    }
+
+    #[Route('/autorizar/{idMensagem}', name: 'app_mensagem_authorize', methods: ['PUT'])]
+    public function autorizar(int $idMensagem, AutorizarMensagem $autorizarMensagem): JsonResponse
+    {
+        $autorizarMensagem->executar($idMensagem);
+
+        return $this->json(
+            ['mensagem' => 'Mensagem autorizada!']
         );
     }
 
@@ -70,7 +81,7 @@ class MensagemController extends AbstractController
         $excluirMensagem->executar($idMensagem);
 
         return $this->json(
-            ['mensagem' => 'excluído com sucesso!']
+            ['mensagem' => 'Mensagem excluída com sucesso!']
         );
     }
 
