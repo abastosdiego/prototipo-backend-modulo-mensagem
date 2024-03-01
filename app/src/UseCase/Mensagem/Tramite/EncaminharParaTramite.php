@@ -1,14 +1,13 @@
 <?php
 
-namespace App\UseCase;
+namespace App\UseCase\Mensagem\Tramite;
 
 use App\Entity\Usuario;
 use App\Repository\MensagemRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
 
-class CadastrarTramite {
+class EncaminharParaTramite {
     private Usuario $usuarioLogado;
 
     public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository, private UsuarioRepository $usuarioRepository){
@@ -18,22 +17,20 @@ class CadastrarTramite {
         //$usuario->getUnidade()
     }
 
-    public function executar($idMensagem, array $inputData) {
-        $mensagem = $this->mensagemRepository->find($idMensagem);
+    public function executar(int $idMensagem, array $inputData) {
 
-        if(isset($inputData['tramite_futuro'])) {
+        if(isset($inputData['usuario'])) {
 
-            foreach($inputData['tramite_futuro'] as $nip) {
-                $usuariosTramiteFuturo[] = $this->usuarioRepository->findOneBy(['nip' => $nip]);
-            }
+            $usuario = $this->usuarioRepository->findOneBy(['nip' => $inputData['usuario']]);
 
-            $mensagem->criarTramite($this->usuarioLogado->getUnidade(), $this->usuarioLogado, $usuariosTramiteFuturo);
+            $mensagem = $this->mensagemRepository->find($idMensagem);
+            $tramite = $mensagem->getTramite($this->usuarioLogado->getUnidade());
+            $tramite->encaminharPara($usuario);
 
             // Efetua as alterações no banco de dados
             $this->entityManager->flush();
-
         } else {
-            throw new \DomainException('tramite_futuro não informado');
+            throw new \DomainException('usuario não informado');
         }
     }
 }

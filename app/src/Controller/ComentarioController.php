@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\UseCase\CadastrarComentario;
-use App\UseCase\AlterarComentario;
-use App\UseCase\ExcluirComentario;
+use App\UseCase\Mensagem\Comentario\CadastrarComentario;
+use App\UseCase\Mensagem\Comentario\AlterarComentario;
+use App\UseCase\Mensagem\Comentario\ExcluirComentario;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

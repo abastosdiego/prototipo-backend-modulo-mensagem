@@ -1,15 +1,12 @@
 <?php
 
-namespace App\UseCase;
+namespace App\UseCase\Mensagem\Comentario;
 
 use App\Repository\MensagemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AlterarComentario {
-    public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository)
-    {
-        
-    }
+    public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository) {}
 
     public function executar(int $idMensagem, int $idComentario, array $inputData) {
         $mensagem = $this->mensagemRepository->find($idMensagem);

@@ -38,11 +38,11 @@ class Tramite
     #[Groups(['show_mensagem'])]
     private Collection $tramites_passado;
 
-    public function __construct(Mensagem $mensagem, Unidade $unidade, Usuario $tramiteAtual)
+    public function __construct(Mensagem $mensagem, Unidade $unidade, Usuario $usuarioAtual)
     {
         $this->mensagem = $mensagem;
         $this->unidade = $unidade;
-        $this->usuario_atual = $tramiteAtual;
+        $this->usuario_atual = $usuarioAtual;
         $this->tramites_futuro = new ArrayCollection();
         $this->tramites_passado = new ArrayCollection();
     }
@@ -66,16 +66,6 @@ class Tramite
     public function getTramitesPassado(): Collection
     {
         return $this->tramites_passado;
-    }
-
-    /**
-     * @return TramiteFuturo
-     */
-    public function getProximoTramiteFuturo(): TramiteFuturo
-    {
-        if (count($this->getTramitesFuturo()) == 0) { new \DomainException("Trâmite não definido!");}
-
-        return (object) $this->tramites_futuro[0];
     }
 
     public function criarTramiteFuturo(array $usuarios): void {
@@ -107,7 +97,14 @@ class Tramite
         $this->tramites_futuro->removeElement($this->getProximoTramiteFuturo());
 
         //Ao encaminhar, a mensagem deixa de ser rascunho
-        $this->mensagem->sairRascunho();
+        $this->mensagem->removerDoRascunho();
+    }
+    
+    private function getProximoTramiteFuturo(): TramiteFuturo
+    {
+        if (count($this->getTramitesFuturo()) == 0) { new \DomainException("Trâmite não definido!");}
+
+        return (object) $this->tramites_futuro[0];
     }
 
     public function encaminharPara(Usuario $usuario): void {
@@ -120,7 +117,7 @@ class Tramite
         $this->usuario_atual = $usuario;
 
         //Ao encaminhar, a mensagem deixa de ser rascunho
-        $this->mensagem->sairRascunho();
+        $this->mensagem->removerDoRascunho();
     }
 
 }

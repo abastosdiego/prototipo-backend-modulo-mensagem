@@ -79,7 +79,7 @@ class Mensagem
         $this->comentarios = new ArrayCollection();
     }
 
-    public function carregarValores(array $inputData, array $unidadesDestino, array $unidadesInformacao) {
+    public function carregarValores(array $inputData, array $unidadesDestino, array $unidadesInformacao): void {
 
         if(isset($inputData['assunto'])) {
             $this->assunto = $inputData['assunto'];
@@ -169,35 +169,6 @@ class Mensagem
         return $this->unidade_origem;
     }
 
-    public function isRascunho(): ?bool
-    {
-        return $this->rascunho;
-    }
-
-    public function sairRascunho() {
-        $this->rascunho = false;
-    }
-
-    public function autorizar() {
-        if($this->data_autorizacao !== null) {throw new \DomainException('Mensagem já foi autorizada!');}
-        if(count($this->unidades_destino) === 0) {throw new \DomainException('Mensagem sem destino não pode ser autorizada!');}
-
-        $dataHoje = new DateTime('now');
-        $this->data_autorizacao = $dataHoje;
-        $this->criarDataHora($dataHoje);
-    }
-
-    private function criarDataHora($dataHoje) {
-        $dia = $dataHoje->format('d');
-        $meses = array('JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ');
-        $mes = $meses[$dataHoje->format('n') - 1];
-        $ano = $dataHoje->format('Y');
-        $hora = $dataHoje->format('G');
-        $minuto = $dataHoje->format('i');
-
-        $this->data_hora = 'R' . $dia . $hora . $minuto . 'Z/'. $mes . '/' . $ano;
-    }
-
     /**
      * @return Collection<int, Unidade>
      */
@@ -246,7 +217,7 @@ class Mensagem
         return $this;
     }
 
-    public function criarTramite(Unidade $unidade, Usuario $tramiteAtual, array $usuariosTramiteFuturo): static
+    public function criarTramite(Unidade $unidade, Usuario $tramiteAtual, array $usuariosTramiteFuturo): void
     {
         if ($this->getTramite($unidade)) { 
             throw new \DomainException("Trâmite já existe!");
@@ -256,8 +227,14 @@ class Mensagem
         $this->tramites->add($tramite);
 
         $tramite->criarTramiteFuturo($usuariosTramiteFuturo);
+    }
 
-        return $this;
+    /**
+     * @return Collection<int, Tramite>
+     */
+    public function getTramites(): Collection
+    {
+        return $this->tramites;
     }
 
     public function getTramite(Unidade $unidade) : Tramite | null {
@@ -267,14 +244,6 @@ class Mensagem
             }
         }
         return null;
-    }
-
-    /**
-     * @return Collection<int, Tramite>
-     */
-    public function getTramites(): Collection
-    {
-        return $this->tramites;
     }
 
     /**
@@ -304,16 +273,38 @@ class Mensagem
         return $comentario;
     }
 
-    public function changeComentario(int $idComentario, string $texto): void
-    {
-        $comentario = $this->getComentario($idComentario);
-        $comentario->alterarTexto($texto);
-    }
-
     public function removeComentario(int $idComentario): void
     {
         $comentario = $this->getComentario($idComentario);
         $this->comentarios->removeElement($comentario);
     }
 
+    public function autorizar(): void {
+        if($this->data_autorizacao !== null) {throw new \DomainException('Mensagem já foi autorizada!');}
+        if(count($this->unidades_destino) === 0) {throw new \DomainException('Mensagem sem destino não pode ser autorizada!');}
+
+        $dataHoje = new DateTime('now');
+        $this->data_autorizacao = $dataHoje;
+        $this->criarDataHora($dataHoje);
+    }
+
+    private function criarDataHora($dataHoje): void {
+        $dia = $dataHoje->format('d');
+        $meses = array('JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ');
+        $mes = $meses[$dataHoje->format('n') - 1];
+        $ano = $dataHoje->format('Y');
+        $hora = $dataHoje->format('G');
+        $minuto = $dataHoje->format('i');
+
+        $this->data_hora = 'R' . $dia . $hora . $minuto . 'Z/'. $mes . '/' . $ano;
+    }
+
+    public function isRascunho(): ?bool
+    {
+        return $this->rascunho;
+    }
+
+    public function removerDoRascunho() {
+        $this->rascunho = false;
+    }
 }

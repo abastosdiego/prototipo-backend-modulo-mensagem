@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCase;
+namespace App\UseCase\Mensagem;
 
 use App\Repository\MensagemRepository;
 use App\Repository\UsuarioRepository;

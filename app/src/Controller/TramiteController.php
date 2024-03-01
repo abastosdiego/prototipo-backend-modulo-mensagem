@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\UseCase\CadastrarTramite;
-use App\UseCase\AlterarTramite;
-use App\UseCase\EncaminharTramite;
-use App\UseCase\EncaminharParaTramite;
+use App\UseCase\Mensagem\Tramite\CadastrarTramite;
+use App\UseCase\Mensagem\Tramite\AlterarTramite;
+use App\UseCase\Mensagem\Tramite\EncaminharTramite;
+use App\UseCase\Mensagem\Tramite\EncaminharParaTramite;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;

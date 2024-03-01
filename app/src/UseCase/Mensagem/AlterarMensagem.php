@@ -1,8 +1,7 @@
 <?php
 
-namespace App\UseCase;
+namespace App\UseCase\Mensagem;
 
-use App\Entity\Unidade;
 use App\Repository\MensagemRepository;
 use App\Repository\UnidadeRepository;
 use App\Repository\UsuarioRepository;

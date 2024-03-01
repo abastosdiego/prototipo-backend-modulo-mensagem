@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCase;
+namespace App\UseCase\Mensagem\Comentario;
 
 use App\Repository\MensagemRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -8,10 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class ExcluirComentario {
 
 
-    public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository)
-    {
-        
-    }
+    public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository){}
 
     public function executar(int $idMensagem, int $idComentario): void {
         $mensagem = $this->mensagemRepository->find($idMensagem);

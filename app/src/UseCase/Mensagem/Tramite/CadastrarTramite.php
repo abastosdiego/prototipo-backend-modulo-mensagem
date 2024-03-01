@@ -1,13 +1,14 @@
 <?php
 
-namespace App\UseCase;
+namespace App\UseCase\Mensagem\Tramite;
 
 use App\Entity\Usuario;
 use App\Repository\MensagemRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
 
-class AlterarTramite {
+class CadastrarTramite {
     private Usuario $usuarioLogado;
 
     public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository, private UsuarioRepository $usuarioRepository){
@@ -17,7 +18,7 @@ class AlterarTramite {
         //$usuario->getUnidade()
     }
 
-    public function executar(int $idMensagem, array $inputData) {
+    public function executar($idMensagem, array $inputData) {
         $mensagem = $this->mensagemRepository->find($idMensagem);
 
         if(isset($inputData['tramite_futuro'])) {
@@ -26,8 +27,7 @@ class AlterarTramite {
                 $usuariosTramiteFuturo[] = $this->usuarioRepository->findOneBy(['nip' => $nip]);
             }
 
-            $tramite = $mensagem->getTramite($this->usuarioLogado->getUnidade());
-            $tramite->criarTramiteFuturo($usuariosTramiteFuturo);
+            $mensagem->criarTramite($this->usuarioLogado->getUnidade(), $this->usuarioLogado, $usuariosTramiteFuturo);
 
             // Efetua as alterações no banco de dados
             $this->entityManager->flush();
