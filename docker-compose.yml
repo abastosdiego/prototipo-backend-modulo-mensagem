@@ -22,7 +22,6 @@ services:
   db:
     container_name: "${CONTAINER_NAME_PREFIX}-postgres"
     image: postgres:15
-    restart: always
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
