@@ -73,6 +73,7 @@ class Mensagem
         $this->unidades_informacao = new ArrayCollection();
         $this->data_entrada = new \DateTime('now');
         $this->rascunho = true;
+        $this->criarDataHoraMinuta(new DateTime('now'));
 
         $this->carregarValores($inputData, $unidadesDestino, $unidadesInformacao);
         $this->tramites = new ArrayCollection();
@@ -297,6 +298,17 @@ class Mensagem
         $minuto = $dataHoje->format('i');
 
         $this->data_hora = 'R' . $dia . $hora . $minuto . 'Z/'. $mes . '/' . $ano;
+    }
+
+    private function criarDataHoraMinuta($dataHoje): void {
+        $dia = $dataHoje->format('d');
+        $meses = array('JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ');
+        $mes = $meses[$dataHoje->format('n') - 1];
+        $ano = $dataHoje->format('Y');
+        $hora = $dataHoje->format('G');
+        $minuto = $dataHoje->format('i');
+
+        $this->data_hora = 'M' . $dia . $hora . $minuto . 'Z/'. $mes . '/' . $ano;
     }
 
     public function isRascunho(): ?bool

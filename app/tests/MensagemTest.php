@@ -53,10 +53,10 @@ class MensagemTest extends TestCase
                             $this->getUnidadesInformacao());
         
         $this->assertFalse($mensagem->isAutorizado());
-        $this->assertNull($mensagem->getDataHora());
+        $this->assertStringStartsWith('M',$mensagem->getDataHora());
         $mensagem->autorizar();
         $this->assertTrue($mensagem->isAutorizado());
-        $this->assertNotNull($mensagem->getDataHora());
+        $this->assertStringStartsWith('R',$mensagem->getDataHora());
     }
 
     public function testMensagemPrazoInvalido(): void
