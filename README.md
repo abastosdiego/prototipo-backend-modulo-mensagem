@@ -4,7 +4,7 @@
 
 02 - Execute o comando "docker pull php:apache"
 
-03 - Executar o comando "sudo -E docker compose up --build".
+03 - Executar o comando "sudo -E docker compose up".
 
 04 - Abrir a seguinte url no navegador: "localhost:8123/api/unidade".
 
@@ -14,6 +14,19 @@
 
 ------------------------
 # Documentação da API
+
+# Login
+
+# POST
+http://localhost:8123/api/login_check
+<br />
+{
+    "username": "nip",
+    "password": "dadm123"
+}
+
+# Todas as requisições em diantes precisarão passar no header o token recebido na api de login
+Authorization: Bearer {token}
 
 # Unidade
 
