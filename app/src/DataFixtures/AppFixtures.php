@@ -7,11 +7,12 @@ use App\Entity\Usuario;
 use App\Repository\UnidadeRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AppFixtures extends Fixture
 {
-    public function __construct(private HttpClientInterface $httpClient, private UnidadeRepository $unidadeRepository){}
+    public function __construct(private HttpClientInterface $httpClient, private UnidadeRepository $unidadeRepository, private UserPasswordHasherInterface $passwordHasher){}
 
     public function load(ObjectManager $manager): void
     {
@@ -50,88 +51,84 @@ class AppFixtures extends Fixture
 
         //### Usuários ###//
 
-        $usuario = new Usuario();
-        $usuario->setNip('55114000098');
-        $usuario->setNome('Alexandre Viveiros');
-        $usuario->setEmail('alexandre.viveiros@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        $senha = 'dadm123';
+
+        $usuario = new Usuario(nip:'85988359', nome:'Alexandre Viveiros', email:'alexandre.viveiros@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('83019858011');
-        $usuario->setNome('Anderson Fernandes');
-        $usuario->setEmail('anderson.fernandes@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+
+        $usuario = new Usuario(nip:'87300061', nome:'Anderson Fernandes', email:'anderson.fernandes@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('17076021072');
-        $usuario->setNome('Filipe Moura');
-        $usuario->setEmail('filipe.moura@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+
+        $usuario = new Usuario(nip:'87358549', nome:'Vanderleia de Figueiredo', email:'vanderleia@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('52047808073');
-        $usuario->setNome('Vanderleia de Figueiredo');
-        $usuario->setEmail('vanderleia@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+
+        $usuario = new Usuario(nip:'01052331', nome:'Arlyson de Almeida', email:'arlyson@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('27947170061');
-        $usuario->setNome('Arlyson de Almeida');
-        $usuario->setEmail('arlyson@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+
+        $usuario = new Usuario(nip:'86798561', nome:'Milton Cunha', email:'milton.cunha@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('68204608055');
-        $usuario->setNome('Paulo Silva');
-        $usuario->setEmail('paulo-fernandes.pf@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+        
+        $usuario = new Usuario(nip:'86936867', nome:'Abrahaão Silva', email:'abrahaao.silva@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('89303881087');
-        $usuario->setNome('Milton Cunha');  
-        $usuario->setEmail('milton.cunha@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+
+        $usuario = new Usuario(nip:'16055659', nome:'Thiago Alves', email:'rodrigues.alves@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('71079764003');
-        $usuario->setNome('Abrahaão Silva');
-        $usuario->setEmail('abrahaao.silva@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+
+        $usuario = new Usuario(nip:'17090148', nome:'Diego Bastos', email:'d.bastos@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('34490399030');
-        $usuario->setNome('Thiago Alves');
-        $usuario->setEmail('rodrigues.alves@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
+        ///
+
+        $usuario = new Usuario(nip:'21415021', nome:'Leonardo Freire', email:'leonardo-gomes.freire@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
         $manager->persist($usuario);
 
-        $usuario = new Usuario();
-        $usuario->setNip('05060825043');
-        $usuario->setNome('Diego Bastos');
-        $usuario->setEmail('d.bastos@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
-        $manager->persist($usuario);
+        ///
 
-        $usuario = new Usuario();
-        $usuario->setNip('98101504079');
-        $usuario->setNome('Leonardo Freire');
-        $usuario->setEmail('leonardo-gomes.freire@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
-        $manager->persist($usuario);
+        $usuario = new Usuario(nip:'23378026', nome:'Matheus Moraes', email:'nascimento.moraes@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
 
-        $usuario = new Usuario();
-        $usuario->setNip('02819239064');
-        $usuario->setNome('Matheus Moraes');
-        $usuario->setEmail('nascimento.moraes@marinha.mil.br');
-        $usuario->setUnidade($unidadeDAdM);
         $manager->persist($usuario);
 
         $manager->flush();

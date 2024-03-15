@@ -1,2 +1,8 @@
 RewriteEngine On
+
+#Regra para utilização da Autenticação Bearer
+RewriteCond %{HTTP:Authorization} ^(.*) 
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+#Regra para o funcionamento do symfony
 RewriteRule ^(.*)$ index.php [L,QSA]

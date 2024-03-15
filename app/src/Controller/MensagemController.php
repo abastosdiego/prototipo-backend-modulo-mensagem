@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Usuario;
 use App\UseCase\Mensagem\ListarMensagens;
 use App\UseCase\Mensagem\BuscarMensagemPeloId;
 use App\UseCase\Mensagem\CadastrarMensagem;
@@ -12,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -43,10 +45,10 @@ class MensagemController extends AbstractController
     }
 
     #[Route('', name: 'app_mensagem_new', methods: ['POST'])]
-    public function new(Request $request, CadastrarMensagem $cadastrarMensagem): JsonResponse
+    public function new(Request $request, CadastrarMensagem $cadastrarMensagem, #[CurrentUser] ?Usuario $usuarioLogado): JsonResponse
     {
         $inputData = $request->toArray();
-        $idMensagem = $cadastrarMensagem->executar($inputData);
+        $idMensagem = $cadastrarMensagem->executar($inputData, $usuarioLogado);
 
         return $this->json(
             ['mensagem' => 'Mensagem cadastrada com sucesso!',

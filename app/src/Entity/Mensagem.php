@@ -218,13 +218,13 @@ class Mensagem
         return $this;
     }
 
-    public function criarTramite(Unidade $unidade, Usuario $tramiteAtual, array $usuariosTramiteFuturo): void
+    public function criarTramite(Unidade $unidade, Usuario $usuarioAtual, array $usuariosTramiteFuturo): void
     {
         if ($this->getTramite($unidade)) { 
             throw new \DomainException("Trâmite já existe!");
         }
 
-        $tramite = new Tramite($this, $unidade, $tramiteAtual);
+        $tramite = new Tramite($this, $unidade, $usuarioAtual);
         $this->tramites->add($tramite);
 
         $tramite->criarTramiteFuturo($usuariosTramiteFuturo);

@@ -6,15 +6,17 @@ use App\Entity\Usuario;
 use App\Repository\MensagemRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class EncaminharParaTramite {
     private Usuario $usuarioLogado;
 
-    public function __construct(private EntityManagerInterface $entityManager, private MensagemRepository $mensagemRepository, private UsuarioRepository $usuarioRepository){
-        // Pegar usuário logado //
-        $idUsuario = 12;
-        $this->usuarioLogado = $this->usuarioRepository->find($idUsuario);
-        //$usuario->getUnidade()
+    public function __construct(private EntityManagerInterface $entityManager, private Security $security, private MensagemRepository $mensagemRepository, private UsuarioRepository $usuarioRepository){
+        if ($this->security->getUser() instanceof Usuario) {
+            $this->usuarioLogado = $this->security->getUser();
+        } else {
+            throw new \DomainException('Usuário logado não encontrado!');
+        }
     }
 
     public function executar(int $idMensagem, array $inputData) {
