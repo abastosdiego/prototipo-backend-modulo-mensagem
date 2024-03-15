@@ -1,0 +1,50 @@
+<?php
+
+namespace App\UseCase\Mensagem;
+
+use App\Entity\Usuario;
+use App\Repository\MensagemRepository;
+use App\Repository\UsuarioRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+
+class ListarMensagensEnviadas {
+    private Usuario $usuarioLogado;
+
+    public function __construct(private EntityManagerInterface $entityManager, private Security $security, private MensagemRepository $mensagemRepository, private UsuarioRepository $usuarioRepository) {
+        if ($this->security->getUser() instanceof Usuario) {
+            $this->usuarioLogado = $this->security->getUser();
+        } else {
+            throw new \DomainException('Usuário logado não encontrado!');
+        }
+    }
+
+    public function executar(): array {
+
+        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId(),
+                                                        'rascunho' => false]);
+
+        // ####################################################################################
+        // NÃO PODE FICAR ASSIM!!!!!!!!!!! MELHORAR DEPOIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // ####################################################################################
+
+        $mensagensRetorno = [];
+        foreach($mensagens as $mensagem) {
+
+            if ($mensagem->getDataAutorizacao() !== null) {
+
+                //Remove do objeto $mensagem os trâmites que não são da OM do usuário. Pois ele não tem acesso de visualização desses tramites.
+                $this->entityManager->detach($mensagem);
+                foreach($mensagem->getTramites() as $tramite) {
+                    if ($tramite->getUnidade()->getId() !== $this->usuarioLogado->getUnidade()->getId()) {
+                        $mensagem->getTramites()->removeElement($tramite);
+                    }
+                }
+                $mensagensRetorno[] = $mensagem;
+
+            }
+        }
+
+        return $mensagensRetorno;
+    }
+}

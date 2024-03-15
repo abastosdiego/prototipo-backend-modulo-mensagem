@@ -44,11 +44,20 @@ http://localhost:8123/api/usuario/unidade/{siglaUnidade}
 
 # Mensagem
 # GET
-http://localhost:8123/api/mensagem
+http://localhost:8123/api/mensagem/rascunho
 <br />
-ou
+<br />
+# GET
+http://localhost:8123/api/mensagem/aguardando-transmissao
+<br />
+<br />
+# GET
+http://localhost:8123/api/mensagem/enviadas
+<br />
 <br />
 http://localhost:8123/api/mensagem/{idMensagem}
+<br />
+<br />
 
 # POST
 http://localhost:8123/api/mensagem

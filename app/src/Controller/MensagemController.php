@@ -9,6 +9,9 @@ use App\UseCase\Mensagem\CadastrarMensagem;
 use App\UseCase\Mensagem\AlterarMensagem;
 use App\UseCase\Mensagem\AutorizarMensagem;
 use App\UseCase\Mensagem\ExcluirMensagem;
+use App\UseCase\Mensagem\ListarMensagensAgTransmissao;
+use App\UseCase\Mensagem\ListarMensagensEnviadas;
+use App\UseCase\Mensagem\ListarMensagensRascunho;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,10 +31,26 @@ class MensagemController extends AbstractController
                                         ->toArray();
     }
 
-    #[Route('/', name: 'app_mensagem_index', methods: ['GET'])]
-    public function index(ListarMensagens $listarMensagens) : JsonResponse
+    #[Route('/rascunho', name: 'app_mensagem_rascunho_list', methods: ['GET'])]
+    public function listarRascunho(ListarMensagensRascunho $listarMensagensRascunho) : JsonResponse
     {
-        $mensagens = $listarMensagens->executar();
+        $mensagens = $listarMensagensRascunho->executar();
+
+        return JsonResponse::fromJsonString($this->serializer->serialize($mensagens, 'json', $this->contextJsonSerialize));
+    }
+
+    #[Route('/aguardando-transmissao', name: 'app_mensagem_aguardando_transmissao', methods: ['GET'])]
+    public function listarAguardandoTransmissao(ListarMensagensAgTransmissao $listarMensagensAgTransmissao) : JsonResponse
+    {
+        $mensagens = $listarMensagensAgTransmissao->executar();
+
+        return JsonResponse::fromJsonString($this->serializer->serialize($mensagens, 'json', $this->contextJsonSerialize));
+    }
+
+    #[Route('/enviadas', name: 'app_mensagem_enviadas', methods: ['GET'])]
+    public function listarEnviadas(ListarMensagensEnviadas $listarMensagensEnviadas) : JsonResponse
+    {
+        $mensagens = $listarMensagensEnviadas->executar();
 
         return JsonResponse::fromJsonString($this->serializer->serialize($mensagens, 'json', $this->contextJsonSerialize));
     }

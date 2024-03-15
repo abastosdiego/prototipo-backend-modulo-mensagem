@@ -8,7 +8,7 @@ use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class ListarMensagens {
+class ListarMensagensRascunho {
     private Usuario $usuarioLogado;
 
     public function __construct(private EntityManagerInterface $entityManager, private Security $security, private MensagemRepository $mensagemRepository, private UsuarioRepository $usuarioRepository) {
@@ -21,7 +21,8 @@ class ListarMensagens {
 
     public function executar(): array {
 
-        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId()]);
+        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId(),
+                                                        'rascunho' => true]);
 
         foreach($mensagens as $mensagem) {
 
