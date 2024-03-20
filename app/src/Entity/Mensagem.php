@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MensagemRepository;
 use DateTime;
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -72,8 +73,8 @@ class Mensagem
         $this->unidades_destino = new ArrayCollection();
         $this->unidades_informacao = new ArrayCollection();
         $this->data_entrada = new \DateTime('now');
-        $this->rascunho = true;
-        $this->criarDataHoraMinuta(new DateTime('now'));
+        $this->rascunho = true; //RN001
+        $this->criarDataHoraMinuta(); //RN002
 
         $this->carregarValores($inputData, $unidadesDestino, $unidadesInformacao);
         $this->tramites = new ArrayCollection();
@@ -98,6 +99,7 @@ class Mensagem
             $this->sigilo = $inputData['sigilo'];
         }
 
+        ///RN007 (parte da regra de negócio)
         if(isset($inputData['prazo'])) {
             try{
                 $this->prazo = new \DateTime($inputData['prazo']);
@@ -220,6 +222,7 @@ class Mensagem
 
     public function criarTramite(Unidade $unidade, Usuario $usuarioAtual, array $usuariosTramiteFuturo): void
     {
+        //RN006
         if ($this->getTramite($unidade)) { 
             throw new \DomainException("Trâmite já existe!");
         }
@@ -281,15 +284,24 @@ class Mensagem
     }
 
     public function autorizar(): void {
+        //RN004
         if($this->data_autorizacao !== null) {throw new \DomainException('Mensagem já foi autorizada!');}
-        if(count($this->unidades_destino) === 0) {throw new \DomainException('Mensagem sem destino não pode ser autorizada!');}
+
+        //RN005
+        if(count($this->unidades_destino) === 0) {throw new \DomainException('Mensagem sem OM destino não pode ser autorizada!');}
 
         $dataHoje = new DateTime('now');
         $this->data_autorizacao = $dataHoje;
-        $this->criarDataHora($dataHoje);
+        $this->criarDataHora();
     }
 
-    private function criarDataHora($dataHoje): void {
+    /**
+     * RN003
+     */
+    private function criarDataHora(): void {
+
+        $dataHoje = new DateTime('now', new DateTimeZone('UTC'));
+
         $dia = $dataHoje->format('d');
         $meses = array('JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ');
         $mes = $meses[$dataHoje->format('n') - 1];
@@ -300,7 +312,13 @@ class Mensagem
         $this->data_hora = 'R' . $dia . $hora . $minuto . 'Z/'. $mes . '/' . $ano;
     }
 
-    private function criarDataHoraMinuta($dataHoje): void {
+    /**
+     * RN002
+     */
+    private function criarDataHoraMinuta(): void {
+        
+        $dataHoje = new DateTime('now', new DateTimeZone('UTC'));
+
         $dia = $dataHoje->format('d');
         $meses = array('JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ');
         $mes = $meses[$dataHoje->format('n') - 1];

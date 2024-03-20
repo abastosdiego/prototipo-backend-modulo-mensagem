@@ -1,6 +1,5 @@
 FROM php:apache
 
-
 ENV TZ=America/Sao_Paulo
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
@@ -25,8 +24,12 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
+# Definir o 'date.timezone' no php.ini para America/Sao_Paulo
+RUN sed -i "s/;date.timezone =/date.timezone = America\/Sao_Paulo/g" $PHP_INI_DIR/php.ini
+
+
 # Install postgres, PDO and other packages
-RUN apt-get -y update && apt-get install -y libpq-dev zip curl
+RUN apt-get -y update && apt-get install -y libpq-dev zip curl 
 RUN docker-php-ext-install pgsql pdo_pgsql
 RUN a2enmod rewrite
 
@@ -35,8 +38,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=2.6.6 --instal
 RUN chmod +x /usr/local/bin/composer
 RUN composer config --global process-timeout 2000
 
-#Ajuste do relógio
-#RUN ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
-#RUN dpkg-reconfigure -f noninteractive tzdata
 
 ENTRYPOINT ["sh",  "./docker-entrypoint.sh"]
