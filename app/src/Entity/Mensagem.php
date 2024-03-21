@@ -73,7 +73,11 @@ class Mensagem
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $prazo_resposta = null;
 
-    public function __construct(array $inputData, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao = array())
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private Usuario $usuario_autor;
+
+    public function __construct(array $inputData, Usuario $usuario_autor, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao = array())
     {
         $this->unidade_origem = $unidadeOrigem;
         $this->unidades_destino = new ArrayCollection();
@@ -83,6 +87,7 @@ class Mensagem
         $this->comentarios = new ArrayCollection();
         $this->rascunho = true; //RN001
         $this->exige_resposta = false;
+        $this->usuario_autor = $usuario_autor;
 
         $this->criarDataHoraMinuta(); //RN002
 
@@ -312,8 +317,12 @@ class Mensagem
         //RN005
         if(count($this->unidades_destino) === 0) {throw new \DomainException('Mensagem sem OM destino não pode ser autorizada!');}
 
-        $dataHoje = new DateTime('now');
-        $this->data_autorizacao = $dataHoje;
+        //RN008
+        if($this->rascunho()) {throw new \DomainException('Mensagem no rascunho não pode ser autorizada!');}
+
+        //RN010
+        $this->data_autorizacao = new DateTime('now');
+
         $this->criarDataHora();
     }
 
@@ -368,6 +377,11 @@ class Mensagem
     public function getPrazoResposta(): ?\DateTimeInterface
     {
         return $this->prazo_resposta;
+    }
+
+    public function getUsuarioAutor(): Usuario
+    {
+        return $this->usuario_autor;
     }
 
 }

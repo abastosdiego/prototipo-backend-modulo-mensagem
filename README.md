@@ -55,6 +55,7 @@ http://localhost:8123/api/mensagem/aguardando-transmissao
 http://localhost:8123/api/mensagem/enviadas
 <br />
 <br />
+# GET
 http://localhost:8123/api/mensagem/{idMensagem}
 <br />
 <br />
@@ -96,6 +97,11 @@ http://localhost:8123/api/mensagem/{idMensagem}
 
 <br />
 
+# PUT
+http://localhost:8123/api/mensagem/autorizar/{idMensagem}
+
+<br />
+
 # Comentários
 
 # GET
@@ -128,7 +134,7 @@ http://localhost:8123/api/mensagem/tramite/{idMensagem}
 
 <br />
 {
-    "tramite_futuro": ["27947170061","83019858011","55114000098"]
+    "tramite_futuro": ["01052331","87300061","85988359"]
 }
 
 # PUT
@@ -136,7 +142,7 @@ http://localhost:8123/api/mensagem/tramite/alterar/{idMensagem}
 
 <br />
 {
-    "tramite_futuro": ["27947170061","89303881087","83019858011","55114000098"]
+    "tramite_futuro": ["01052331","17090148","87300061","85988359"]
 }
 
 # PUT

@@ -1,6 +1,6 @@
 FROM php:apache
 
-ENV TZ=America/Sao_Paulo
+#ENV TZ=America/Sao_Paulo
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
@@ -25,7 +25,7 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 # Definir o 'date.timezone' no php.ini para America/Sao_Paulo
-RUN sed -i "s/;date.timezone =/date.timezone = America\/Sao_Paulo/g" $PHP_INI_DIR/php.ini
+#RUN sed -i "s/;date.timezone =/date.timezone = America\/Sao_Paulo/g" $PHP_INI_DIR/php.ini
 
 
 # Install postgres, PDO and other packages

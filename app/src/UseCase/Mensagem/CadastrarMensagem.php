@@ -27,7 +27,8 @@ class CadastrarMensagem {
         $unidadesDestino = $this->unidadeRepository->getUnidadesPelasSiglas($inputData['unidadesDestinoSiglas']);
         $unidadesInformacao = $this->unidadeRepository->getUnidadesPelasSiglas($inputData['unidadesInformacaoSiglas']);
 
-        $mensagem = new Mensagem($inputData, $this->usuarioLogado->getUnidade(), $unidadesDestino, $unidadesInformacao);
+        //RN001
+        $mensagem = new Mensagem($inputData, $this->usuarioLogado, $this->usuarioLogado->getUnidade(), $unidadesDestino, $unidadesInformacao);
 
         // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
         $this->entityManager->persist($mensagem);

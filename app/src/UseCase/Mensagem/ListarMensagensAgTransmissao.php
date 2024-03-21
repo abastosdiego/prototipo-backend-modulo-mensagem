@@ -21,9 +21,7 @@ class ListarMensagensAgTransmissao {
 
     public function executar(): array {
 
-        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId(),
-                                                        'rascunho' => false,
-                                                        'data_autorizacao' => null]);
+        $mensagens = $this->mensagemRepository->listarMensagensAguardandoTransmissao($this->usuarioLogado->getUnidade()->getId(), $this->usuarioLogado->getId());
 
         foreach($mensagens as $mensagem) {
 

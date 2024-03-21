@@ -21,8 +21,10 @@ class ListarMensagensEnviadas {
 
     public function executar(): array {
 
-        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId(),
-                                                        'rascunho' => false]);
+        //$mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId(),
+        //                                                'rascunho' => false]);
+
+        $mensagens = $this->mensagemRepository->listarMensagensEnviadas($this->usuarioLogado->getUnidade()->getId(),$this->usuarioLogado->getId());
 
         // ####################################################################################
         // NÃO PODE FICAR ASSIM!!!!!!!!!!! MELHORAR DEPOIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

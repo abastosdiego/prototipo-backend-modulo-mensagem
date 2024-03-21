@@ -21,8 +21,8 @@ class ListarMensagensRascunho {
 
     public function executar(): array {
 
-        $mensagens = $this->mensagemRepository->findBy(['unidade_origem' => $this->usuarioLogado->getUnidade()->getId(),
-                                                        'rascunho' => true]);
+        //RN001
+        $mensagens = $this->mensagemRepository->listarMensagensRascunho($this->usuarioLogado->getUnidade()->getId(), $this->usuarioLogado->getId());
 
         foreach($mensagens as $mensagem) {
 
