@@ -19,7 +19,7 @@ class MensagemTest extends TestCase
         $this->assertSame('Mensagem Teste', $mensagem->getAssunto());
         $dataHoje = new \DateTime('now');
         $this->assertSame($dataHoje->format('Ymd'), $mensagem->getDataEntrada()->format('Ymd'));
-        $this->assertSame('20240131', $mensagem->getPrazo()->format('Ymd'));
+        $this->assertSame('20240131', $mensagem->getPrazoTransmissao()->format('Ymd'));
         $this->assertNotNull($mensagem->getUnidadeOrigem());
         $this->assertSame('DAdM', $mensagem->getUnidadeOrigem()->getSigla());
         $this->assertCount(1, $mensagem->getUnidadesDestino());
@@ -27,19 +27,19 @@ class MensagemTest extends TestCase
         
     }
 
-    public function testMensagemSemPrazo(): void
+    public function testMensagemSemPrazoDeTransmissao(): void
     {
-        $mensagem = new Mensagem($this->getInputaDataSemPrazo(), 
+        $mensagem = new Mensagem($this->getInputaDataSemPrazoDeTransmissao(), 
                                  $this->getUnidadeOrigem(),
                                  $this->getUnidadesDestino(),
                                  $this->getUnidadesInformacao());
 
-        $this->assertNull($mensagem->getPrazo());
+        $this->assertNull($mensagem->getPrazoTransmissao());
     }
 
     public function testMensagemSemUnidadesInformacao(): void
     {
-        $mensagem = new Mensagem(inputData: $this->getInputaDataSemPrazo(), 
+        $mensagem = new Mensagem(inputData: $this->getInputaDataSemPrazoDeTransmissao(), 
                                  unidadeOrigem: $this->getUnidadeOrigem(),
                                  unidadesDestino: $this->getUnidadesDestino());
 
@@ -59,12 +59,12 @@ class MensagemTest extends TestCase
         $this->assertStringStartsWith('R',$mensagem->getDataHora());
     }
 
-    public function testMensagemPrazoInvalido(): void
+    public function testMensagemPrazoDeTransmissaoInvalido(): void
     {
         $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage('Prazo inválido');
+        $this->expectExceptionMessage('Prazo de transmissão inválido');
 
-        $mensagem = new Mensagem($this->getInputDataPrazoInvalido(), 
+        $mensagem = new Mensagem($this->getInputDataPrazoTransmissaoInvalido(), 
                                  $this->getUnidadeOrigem(),
                                  $this->getUnidadesDestino(),
                                  $this->getUnidadesInformacao());
@@ -89,31 +89,61 @@ class MensagemTest extends TestCase
                                  unidadesDestino: array());
         
         $this->expectException(\DomainException::class);
-        $this->expectExceptionMessage('Mensagem sem destino não pode ser autorizada!');
+        $this->expectExceptionMessage('Mensagem sem OM destino não pode ser autorizada!');
         $mensagem->autorizar();
+    }
+
+    public function testAutorizacaoMensagemSemPrazoDeResposta(): void {
+        $mensagem = new Mensagem($this->getInputData(), 
+                            $this->getUnidadeOrigem(),
+                            $this->getUnidadesDestino(),
+                            $this->getUnidadesInformacao());
+        
+        $this->assertFalse($mensagem->exigeResposta());
+        $this->assertNull($mensagem->getPrazoResposta());
+    }
+
+    public function testAutorizacaoMensagemComPrazoDeResposta(): void {
+        $mensagem = new Mensagem($this->getInputDataComPrazoDeResposta(), 
+                            $this->getUnidadeOrigem(),
+                            $this->getUnidadesDestino(),
+                            $this->getUnidadesInformacao());
+        
+        $this->assertTrue($mensagem->exigeResposta());
+        $this->assertNotNull($mensagem->getPrazoResposta());
     }
 
     private function getInputData() {
         return array("assunto" => "Mensagem Teste",
                      "texto" => "bla bla bla",
                      "sigilo" => "Ostensivo",
-                     "prazo" => "20240131",
+                     "prazo_transmissao" => "20240131",
                      "observacao" => "teste de observacao");
     }
 
-    private function getInputaDataSemPrazo() {
+    private function getInputaDataSemPrazoDeTransmissao() {
         return array("assunto" => "Mensagem Teste",
                      "texto" => "bla bla bla",
                      "sigilo" => "Ostensivo",
                      "observacao" => "teste de observacao");
     }
 
-    private function getInputDataPrazoInvalido() {
+    private function getInputDataPrazoTransmissaoInvalido() {
         return array("assunto" => "Mensagem Teste",
                      "texto" => "bla bla bla",
                      "sigilo" => "Ostensivo",
-                     "prazo" => "20240132",
+                     "prazo_transmissao" => "20240132",
                      "observacao" => "teste de observacao");
+    }
+
+    private function getInputDataComPrazoDeResposta() {
+        return array("assunto" => "Mensagem Teste",
+                     "texto" => "bla bla bla",
+                     "sigilo" => "Ostensivo",
+                     "prazo_transmissao" => "20240131",
+                     "observacao" => "teste de observacao",
+                     "exige_resposta" => true,
+                     "prazo_resposta" => "20240501",);
     }
 
     private function getUnidadeOrigem() : Unidade {

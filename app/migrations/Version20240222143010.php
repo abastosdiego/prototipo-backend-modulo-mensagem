@@ -32,7 +32,7 @@ final class Version20240222143010 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_4B91E702EDF4B99B ON comentario (unidade_id)');
         $this->addSql('CREATE INDEX IDX_4B91E702DB38439E ON comentario (usuario_id)');
         $this->addSql('COMMENT ON COLUMN comentario.data_hora IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE mensagem (id INT NOT NULL, unidade_origem_id INT NOT NULL, data_hora VARCHAR(17) NOT NULL, assunto VARCHAR(100) NOT NULL, texto VARCHAR(1000) NOT NULL, observacao VARCHAR(1000) DEFAULT NULL, data_entrada DATE NOT NULL, sigilo VARCHAR(20) NOT NULL, prazo DATE DEFAULT NULL, data_autorizacao DATE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE mensagem (id INT NOT NULL, unidade_origem_id INT NOT NULL, data_hora VARCHAR(17) NOT NULL, assunto VARCHAR(100) NOT NULL, texto VARCHAR(1000) NOT NULL, observacao VARCHAR(1000) DEFAULT NULL, data_entrada DATE NOT NULL, sigilo VARCHAR(20) NOT NULL, prazo_transmissao DATE DEFAULT NULL, data_autorizacao DATE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_9E4532B017486C4E ON mensagem (unidade_origem_id)');
         $this->addSql('CREATE TABLE mensagem_unidades_destino (mensagem_id INT NOT NULL, unidade_id INT NOT NULL, PRIMARY KEY(mensagem_id, unidade_id))');
         $this->addSql('CREATE INDEX IDX_BCAF0BD948D9DAD0 ON mensagem_unidades_destino (mensagem_id)');

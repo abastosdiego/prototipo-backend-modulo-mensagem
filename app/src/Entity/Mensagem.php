@@ -41,7 +41,7 @@ class Mensagem
     private ?string $sigilo = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $prazo = null;
+    private ?\DateTimeInterface $prazo_transmissao = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $data_autorizacao = null;
@@ -58,7 +58,7 @@ class Mensagem
     #[ORM\JoinTable(name: "mensagem_unidades_informacao")]
     private Collection $unidades_informacao;
 
-    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Tramite::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
     private Collection $tramites;
 
     #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: Comentario::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
@@ -67,18 +67,26 @@ class Mensagem
     #[ORM\Column]
     private ?bool $rascunho = null;
 
+    #[ORM\Column]
+    private ?bool $exige_resposta = false;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $prazo_resposta = null;
+
     public function __construct(array $inputData, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao = array())
     {
         $this->unidade_origem = $unidadeOrigem;
         $this->unidades_destino = new ArrayCollection();
         $this->unidades_informacao = new ArrayCollection();
         $this->data_entrada = new \DateTime('now');
+        $this->tramites = new ArrayCollection();
+        $this->comentarios = new ArrayCollection();
         $this->rascunho = true; //RN001
+        $this->exige_resposta = false;
+
         $this->criarDataHoraMinuta(); //RN002
 
         $this->carregarValores($inputData, $unidadesDestino, $unidadesInformacao);
-        $this->tramites = new ArrayCollection();
-        $this->comentarios = new ArrayCollection();
     }
 
     public function carregarValores(array $inputData, array $unidadesDestino, array $unidadesInformacao): void {
@@ -99,15 +107,15 @@ class Mensagem
             $this->sigilo = $inputData['sigilo'];
         }
 
-        ///RN007 (parte da regra de negócio)
-        if(isset($inputData['prazo'])) {
+        ///RN007 (Falta implementar parte da regra de negócio)
+        if(isset($inputData['prazo_transmissao'])) {
             try{
-                $this->prazo = new \DateTime($inputData['prazo']);
+                $this->prazo_transmissao = new \DateTime($inputData['prazo_transmissao']);
             } catch (\Exception $ex) {
-                throw new \DomainException('Prazo inválido');
+                throw new \DomainException('Prazo de transmissão inválido');
             }
         } else {
-            $this->prazo = null;
+            $this->prazo_transmissao = null;
         }
         
         $this->unidades_destino = new ArrayCollection();
@@ -119,6 +127,20 @@ class Mensagem
         $this->unidades_informacao = new ArrayCollection();
         foreach($unidadesInformacao as $unidade) {
             $this->addUnidadesInformacao($unidade);
+        }
+
+        if(isset($inputData['exige_resposta'])) {
+            $this->exige_resposta = $inputData['exige_resposta'];
+        }
+
+        if(isset($inputData['prazo_resposta'])) {
+            try{
+                $this->prazo_resposta = new \DateTime($inputData['prazo_resposta']);
+            } catch (\Exception $ex) {
+                throw new \DomainException('Prazo de resposta inválido');
+            }
+        } else {
+            $this->prazo_resposta = null;
         }
 
     }
@@ -151,8 +173,8 @@ class Mensagem
         return $this->sigilo;
     }
 
-    public function getPrazo(): ?\DateTimeInterface {
-        return $this->prazo;
+    public function getPrazoTransmissao(): ?\DateTimeInterface {
+        return $this->prazo_transmissao;
     }
 
     public function getDataAutorizacao() {
@@ -329,7 +351,7 @@ class Mensagem
         $this->data_hora = 'M' . $dia . $hora . $minuto . 'Z/'. $mes . '/' . $ano;
     }
 
-    public function isRascunho(): ?bool
+    public function rascunho(): ?bool
     {
         return $this->rascunho;
     }
@@ -337,4 +359,15 @@ class Mensagem
     public function removerDoRascunho() {
         $this->rascunho = false;
     }
+
+    public function exigeResposta(): ?bool
+    {
+        return $this->exige_resposta;
+    }
+
+    public function getPrazoResposta(): ?\DateTimeInterface
+    {
+        return $this->prazo_resposta;
+    }
+
 }

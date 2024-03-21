@@ -67,10 +67,12 @@ http://localhost:8123/api/mensagem
     "assunto": "Assunto",
     "texto": "Texto",
     "sigilo": "Ostensivo",
-    "prazo": "20240131",
+    "prazo_transmissao": "20240131",
     "observacao": "Observação",
     "unidadesDestinoSiglas" : ["DAdM","DFM"],
-    "unidadesInformacaoSiglas" : ["DGOM"]
+    "unidadesInformacaoSiglas" : ["DGOM"],
+    "exige_resposta" : true,
+    "prazo_resposta" : "20240501"
 }
 
 # PUT
@@ -81,10 +83,12 @@ http://localhost:8123/api/mensagem/{idMensagem}
     "assunto": "Assunto",
     "texto": "Texto",
     "sigilo": "Ostensivo",
-    "prazo": "20240131",
+    "prazo_transmissao": "20240131",
     "observacao": "Observação",
     "unidadesDestinoSiglas" : ["DAdM","DFM"],
-    "unidadesInformacaoSiglas" : ["DGOM"]
+    "unidadesInformacaoSiglas" : ["DGOM"],
+    "exige_resposta" : true,
+    "prazo_resposta" : "20240501"
 }
 
 # DELETE
