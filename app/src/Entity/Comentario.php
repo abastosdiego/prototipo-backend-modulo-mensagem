@@ -38,6 +38,9 @@ class Comentario
     #[Groups(['show_mensagem'])]
     private ?Usuario $usuario = null;
 
+    #[ORM\Column]
+    private bool $rascunho = true;
+
     public function __construct(string $texto, Mensagem $mensagem, Unidade $unidade, Usuario $usuario)
     {
         $this->texto = $texto;
@@ -45,6 +48,7 @@ class Comentario
         $this->mensagem = $mensagem;
         $this->unidade  = $unidade;
         $this->usuario = $usuario;
+        $this->rascunho = true; //RN014
     }
 
     public function alterarTexto(string $texto) {
@@ -71,5 +75,14 @@ class Comentario
     public function getUsuario() {
         return $this->usuario;
     }
-    
+
+    public function rascunho(): bool
+    {
+        return $this->rascunho;
+    }
+
+    public function removerRascunho() {
+        $this->rascunho = false;
+    }
+
 }

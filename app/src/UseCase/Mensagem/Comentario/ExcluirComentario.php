@@ -22,7 +22,11 @@ class ExcluirComentario {
         $mensagem = $this->mensagemRepository->find($idMensagem);
         $comentario = $mensagem->getComentario($idComentario);
         
+        //RN013
         if ($comentario->getUsuario()->getId() !== $this->usuarioLogado->getId()) { throw new \DomainException("Somente quem realizou o comentário pode excluí-lo!");}
+
+        //RN014
+        //if (!$comentario->rascunho()) { throw new \DomainException('Somente comentários no rascunho podem ser excluídos!'); }
 
         $mensagem->removeComentario($idComentario);
 

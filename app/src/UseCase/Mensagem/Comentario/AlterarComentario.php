@@ -22,8 +22,12 @@ class AlterarComentario {
         $mensagem = $this->mensagemRepository->find($idMensagem);
         $comentario = $mensagem->getComentario($idComentario);
         
-        if ($comentario->getUsuario()->getId() !== $this->usuarioLogado->getId()) { throw new \DomainException("Somente quem realizou o comentário pode alterá-lo!");}
+        //RN013
+        if ($comentario->getUsuario()->getId() !== $this->usuarioLogado->getId()) { throw new \DomainException("Somente quem realizou o comentário pode alterá-lo!"); }
         
+        //RN014
+        //if (!$comentario->rascunho()) { throw new \DomainException('Somente comentários no rascunho podem ser alterados!'); }
+
         $comentario->alterarTexto($inputData['texto']);
         
         // Efetua as alterações no banco de dados
