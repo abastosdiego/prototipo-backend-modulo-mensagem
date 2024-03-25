@@ -88,38 +88,24 @@ class MensagemRepository extends ServiceEntityRepository
         
     }
 
-//    /**
-//     * @return Mensagem[] Returns an array of Mensagem objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Mensagem[] Returns an array of Mensagem objects
+     */
+    public function listarMensagensParaConhecimento(int $idUnidadeOrigem, int $idUsuario): array
+    {
+        return $this->createQueryBuilder('mensagem')
+            ->join('mensagem.paraConhecimentos', 'paraConhecimentos')
+            ->join('paraConhecimentos.usuario', 'usuario')
+            ->where('mensagem.unidade_origem = :id_unidade_origem and mensagem.rascunho = :rascunho')
+            ->andWhere('usuario.id = :idUsuario and paraConhecimentos.ciente = false')
+            ->setParameter('id_unidade_origem', $idUnidadeOrigem)
+            ->setParameter('rascunho', false)
+            ->setParameter('idUsuario', $idUsuario)
+            ->orderBy('mensagem.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+        
+    }
 
-//    public function findOneBySomeField($value): ?Mensagem
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
-
-// public function verMetodosPublicos() {
-//     $metodosPublicos = get_class_methods($this);
-
-//     // Exibindo os métodos públicos
-//     echo "Métodos públicos da classe:\n";
-//     foreach ($metodosPublicos as $metodo) {
-//         echo $metodo . "\n";
-//     }
-// }
 }

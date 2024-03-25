@@ -99,6 +99,8 @@ class Tramite
         //RN009
         //Ao encaminhar() ou encaminharPara(), a mensagem sairá do rascunho
         $this->mensagem->removerDoRascunho();
+
+        $this->mensagem->removerComentariosDoRascunho();
     }
     
     private function getProximoTramiteFuturo(): TramiteFuturo
@@ -120,6 +122,8 @@ class Tramite
         //RN009
         //Ao encaminhar() ou encaminharPara(), a mensagem sairá do rascunho
         $this->mensagem->removerDoRascunho();
+
+        $this->mensagem->removerComentariosDoRascunho();
     }
 
 }

@@ -39,6 +39,7 @@ class Comentario
     private ?Usuario $usuario = null;
 
     #[ORM\Column]
+    #[Groups(['show_mensagem'])]
     private bool $rascunho = true;
 
     public function __construct(string $texto, Mensagem $mensagem, Unidade $unidade, Usuario $usuario)
@@ -81,7 +82,7 @@ class Comentario
         return $this->rascunho;
     }
 
-    public function removerRascunho() {
+    public function removerDoRascunho() {
         $this->rascunho = false;
     }
 

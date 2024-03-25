@@ -77,6 +77,9 @@ class Mensagem
     #[ORM\JoinColumn(nullable: false)]
     private Usuario $usuario_autor;
 
+    #[ORM\OneToMany(mappedBy: 'mensagem', targetEntity: ParaConhecimento::class, cascade: ['persist', 'remove'], orphanRemoval:true)]
+    private Collection $paraConhecimentos;
+
     public function __construct(array $inputData, Usuario $usuario_autor, Unidade $unidadeOrigem, array $unidadesDestino, array $unidadesInformacao = array())
     {
         $this->unidade_origem = $unidadeOrigem;
@@ -92,6 +95,7 @@ class Mensagem
         $this->criarDataHoraMinuta(); //RN002
 
         $this->carregarValores($inputData, $unidadesDestino, $unidadesInformacao);
+        $this->paraConhecimentos = new ArrayCollection();
     }
 
     public function carregarValores(array $inputData, array $unidadesDestino, array $unidadesInformacao): void {
@@ -382,6 +386,71 @@ class Mensagem
     public function getUsuarioAutor(): Usuario
     {
         return $this->usuario_autor;
+    }
+
+    public function removerComentariosDoRascunho() {
+        foreach($this->comentarios as $comentario){
+            $comentario->removerDoRascunho();
+        }
+    }
+
+    /**
+     * @return Collection<int, ParaConhecimento>
+     */
+    public function getParaConhecimentos(): Collection
+    {
+        return $this->paraConhecimentos;
+    }
+
+    /**
+     * @return ParaConhecimento
+     */
+    public function getParaConhecimento(Usuario $usuario): ?ParaConhecimento
+    {
+        foreach($this->paraConhecimentos as $paraConhecimento){
+            if ($paraConhecimento->getUsuario() === $usuario) {
+                return $paraConhecimento;
+            }
+        }
+        return null;
+    }
+
+    public function criarParaConhecimento(array $usuarios): void
+    {
+        if ($this->rascunho) {
+            $this->paraConhecimentos = new ArrayCollection();
+
+            foreach($usuarios as $usuario) {
+                $paraConhecimento = new ParaConhecimento($this, $usuario);
+                $this->paraConhecimentos->add($paraConhecimento);
+            }
+        } else {
+            throw new \DomainException('O método de criar/recriar Para-Conhecimentos só pode ser usado em mensagens no rascunho!');
+        }
+
+    }
+
+    public function adicionarParaConhecimento(Usuario $usuario): void
+    {
+        $paraConhecimento = new ParaConhecimento($this, $usuario);
+        if (!$this->paraConhecimentos->contains($paraConhecimento)) {
+            $this->paraConhecimentos->add($paraConhecimento);
+        }
+    }
+
+    public function removerParaConhecimento(Usuario $usuario): void
+    {
+        $paraConhecimento = $this->getParaConhecimento($usuario);
+
+        if ($paraConhecimento) {
+            $this->paraConhecimentos->removeElement($paraConhecimento);
+        }
+    }
+
+    public function cienteParaConhecimento(Usuario $usuario): void
+    {
+        $paraConhecimento = $this->getParaConhecimento($usuario);
+        $paraConhecimento->marcarCiente();
     }
 
 }

@@ -6,7 +6,6 @@ use App\Entity\Usuario;
 use App\Repository\MensagemRepository;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use DomainException;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class CadastrarTramite {

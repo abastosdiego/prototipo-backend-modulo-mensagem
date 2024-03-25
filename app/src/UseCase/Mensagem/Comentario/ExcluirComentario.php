@@ -26,7 +26,7 @@ class ExcluirComentario {
         if ($comentario->getUsuario()->getId() !== $this->usuarioLogado->getId()) { throw new \DomainException("Somente quem realizou o comentário pode excluí-lo!");}
 
         //RN014
-        //if (!$comentario->rascunho()) { throw new \DomainException('Somente comentários no rascunho podem ser excluídos!'); }
+        if (!$comentario->rascunho()) { throw new \DomainException('Este comentário não pode ser excluído, pois não é mais um rascunho!'); }
 
         $mensagem->removeComentario($idComentario);
 

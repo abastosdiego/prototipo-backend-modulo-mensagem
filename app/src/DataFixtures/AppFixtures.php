@@ -16,34 +16,45 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        //### Unidades ###//
-
+        ### Unidades ###//
         $response = $this->httpClient->request(
-            'GET',
-            'https://sisnetuno-hmlg.dadm.mb/api/om/v1/lista'
+             'GET',
+             'https://sisnetuno-hmlg.dadm.mb/api/om/v1/lista'
         );
 
         $statusCode = $response->getStatusCode();
-
         foreach($response->toArray() as $item){
             $unidade = new Unidade();
             $unidade->setSigla($item["sigla"]);
             $unidade->setNome($item["nome"]);
-        
             if($item["sigla"] == "DAdM") {
                 $unidadeDAdM = $unidade;
             }
-
             // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
             $manager->persist($unidade);
         }
 
-        // $unidadeDAdM = new Unidade();
-        // $unidadeDAdM->setSigla('DAdM');
-        // $unidadeDAdM->setNome('Diretoria de Administração da Marinha');
+        //$unidadeDAdM = new Unidade();
+        //$unidadeDAdM->setSigla('DAdM');
+        //$unidadeDAdM->setNome('Diretoria de Administração da Marinha');
 
-        // // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
+        // // // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
         // $manager->persist($unidadeDAdM);
+
+
+        // $unidade = new Unidade();
+        // $unidade->setSigla('DFM');
+        // $unidade->setNome('Diretoria de Finanças da Marinha');
+
+        // // // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
+        // $manager->persist($unidade);
+
+        // $unidade = new Unidade();
+        // $unidade->setSigla('SGM');
+        // $unidade->setNome('Secretaria-Geral da Marinha');
+
+        // // // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
+        // $manager->persist($unidade);
 
         // Efetua as alterações no banco de dados
         $manager->flush();

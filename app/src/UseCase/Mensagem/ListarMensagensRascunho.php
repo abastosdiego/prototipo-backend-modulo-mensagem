@@ -22,19 +22,7 @@ class ListarMensagensRascunho {
     public function executar(): array {
 
         //RN001
-        $mensagens = $this->mensagemRepository->listarMensagensRascunho($this->usuarioLogado->getUnidade()->getId(), $this->usuarioLogado->getId());
-
-        foreach($mensagens as $mensagem) {
-
-            //Remove do objeto $mensagem os trâmites que não são da OM do usuário. Pois ele não tem acesso de visualização desses tramites.
-            $this->entityManager->detach($mensagem);
-            foreach($mensagem->getTramites() as $tramite) {
-                if ($tramite->getUnidade()->getId() !== $this->usuarioLogado->getUnidade()->getId()) {
-                    $mensagem->getTramites()->removeElement($tramite);
-                }
-            }
-        }
-
-        return $mensagens;
+        return $this->mensagemRepository->listarMensagensRascunho($this->usuarioLogado->getUnidade()->getId(), $this->usuarioLogado->getId());
+        
     }
 }

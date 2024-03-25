@@ -26,7 +26,7 @@ class AlterarComentario {
         if ($comentario->getUsuario()->getId() !== $this->usuarioLogado->getId()) { throw new \DomainException("Somente quem realizou o comentário pode alterá-lo!"); }
         
         //RN014
-        //if (!$comentario->rascunho()) { throw new \DomainException('Somente comentários no rascunho podem ser alterados!'); }
+        if (!$comentario->rascunho()) { throw new \DomainException('Este comentário não pode ser alterado, pois não é mais um rascunho!'); }
 
         $comentario->alterarTexto($inputData['texto']);
         

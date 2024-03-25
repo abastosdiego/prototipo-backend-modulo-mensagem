@@ -156,3 +156,42 @@ http://localhost:8123/api/mensagem/tramite/encaminhar-para/{idMensagem}
 {
     "usuario": "05060825043"
 }
+
+# Para Conhecimento
+
+# GET
+http://localhost:8123/api/mensagem/para-conhecimento/listar
+
+<br />
+
+# POST
+http://localhost:8123/api/mensagem/para-conhecimento/{idMensagem}
+
+<br />
+{
+    "para_conhecimento": ["87358549","86798561"]
+}
+
+# PUT
+http://localhost:8123/api/mensagem/para-conhecimento/adicionar/{idMensagem}
+
+<br />
+{
+    "nip": "17090148"
+}
+
+# DELETE 
+http://localhost:8123/api/mensagem/para-conhecimento/remover/{idMensagem}
+
+<br />
+{
+    "nip": "01052331"
+}
+
+# PUT
+http://localhost:8123/api/mensagem/para-conhecimento/ciente/{idMensagem}
+
+<br />
+{
+    "nip": "01052331"
+}
