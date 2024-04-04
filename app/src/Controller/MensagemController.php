@@ -7,10 +7,12 @@ use App\UseCase\Mensagem\BuscarMensagemPeloId;
 use App\UseCase\Mensagem\CadastrarMensagem;
 use App\UseCase\Mensagem\AlterarMensagem;
 use App\UseCase\Mensagem\AutorizarMensagem;
+use App\UseCase\Mensagem\ContarMensagensUsuario;
 use App\UseCase\Mensagem\ExcluirMensagem;
 use App\UseCase\Mensagem\ListarMensagensAgTransmissao;
 use App\UseCase\Mensagem\ListarMensagensEnviadas;
 use App\UseCase\Mensagem\ListarMensagensRascunho;
+use App\UseCase\Mensagem\ListarMensagensRecebidas;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,6 +54,22 @@ class MensagemController extends AbstractController
         $mensagens = $listarMensagensEnviadas->executar();
 
         return JsonResponse::fromJsonString($this->serializer->serialize($mensagens, 'json', $this->contextJsonSerialize));
+    }
+
+    #[Route('/recebidas', name: 'app_mensagem_recebidas', methods: ['GET'])]
+    public function listarRecebidas(ListarMensagensRecebidas $listarMensagensRecebidas) : JsonResponse
+    {
+        $mensagens = $listarMensagensRecebidas->executar();
+
+        return JsonResponse::fromJsonString($this->serializer->serialize($mensagens, 'json', $this->contextJsonSerialize));
+    }
+
+    #[Route('/qtde-mensagens', name: 'app_mensagem_qtde_recebidas', methods: ['GET'])]
+    public function contarRecebidas(ContarMensagensUsuario $contarMensagensusuario) : JsonResponse
+    {
+        $arrayqtdeMensagens = $contarMensagensusuario->executar();
+
+        return JsonResponse::fromJsonString(json_encode($arrayqtdeMensagens));
     }
 
     #[Route('/{idMensagem}', name: 'app_mensagem_show', methods: ['GET'])]

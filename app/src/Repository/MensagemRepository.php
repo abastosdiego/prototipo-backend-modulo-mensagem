@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Mensagem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -106,6 +107,152 @@ class MensagemRepository extends ServiceEntityRepository
             ->getResult()
         ;
         
+    }
+
+
+    /**
+     * @return Mensagem[] Returns an array of Mensagem objects
+     */
+    public function listarMensagensRecebidas(int $idUnidade, int $idUsuario): array
+    {
+        return $this->createQueryBuilder('mensagem')
+
+            ->join('mensagem.unidades_destino', 'unidades_destino')
+            ->leftJoin('mensagem.unidades_informacao', 'unidades_informacao')
+            ->where('mensagem.rascunho = false and mensagem.data_autorizacao is not NULL')
+            ->andWhere('unidades_destino.id = :idUnidade or unidades_informacao.id = :idUnidade')
+            ->setParameter('idUnidade', $idUnidade)
+            ->orderBy('mensagem.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return int Qtde de mensagens Rascunho
+     */
+    public function contarMensagensRascunho(int $idUnidade, int $idUsuario): int
+    {
+         $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'select count(m.id)
+                from mensagem m
+                where m.rascunho = true and m.unidade_origem_id = :idUnidade and m.usuario_autor_id = :idUsuario';
+
+        //$resultSet = $conn->executeQuery($sql, ['price' => $price]);
+        $resultSet = $conn->executeQuery($sql, ['idUnidade' => $idUnidade, 'idUsuario' => $idUsuario]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        $result = $resultSet->fetchAllAssociative();
+
+        if ($result) {
+            return (int) $result[0]['count'];
+        } else {
+            throw new \DomainException('Erro ao buscar a quantidade!');
+        }
+        
+    }
+
+    /**
+     * @return int Qtde de mensagens Aguardando Transmissao
+     */
+    public function contarMensagensAguardandoTransmissao(int $idUnidade, int $idUsuario): int
+    {
+         $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'select count(m.id)
+                from mensagem m
+                where m.rascunho = false and m.data_autorizacao is NULL and m.unidade_origem_id = :idUnidade';
+
+        //$resultSet = $conn->executeQuery($sql, ['price' => $price]);
+        $resultSet = $conn->executeQuery($sql, ['idUnidade' => $idUnidade]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        $result = $resultSet->fetchAllAssociative();
+
+        if ($result) {
+            return (int) $result[0]['count'];
+        } else {
+            throw new \DomainException('Erro ao buscar a quantidade!');
+        }
+        
+    }
+
+    /**
+     * @return int Qtde de mensagens Enviadas
+     */
+    public function contarMensagensEnviadas(int $idUnidade, int $idUsuario): int
+    {
+         $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'select count(m.id)
+                from mensagem m
+                where m.rascunho = false and m.data_autorizacao is not NULL and m.unidade_origem_id = :idUnidade';
+
+        //$resultSet = $conn->executeQuery($sql, ['price' => $price]);
+        $resultSet = $conn->executeQuery($sql, ['idUnidade' => $idUnidade]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        $result = $resultSet->fetchAllAssociative();
+
+        if ($result) {
+            return (int) $result[0]['count'];
+        } else {
+            throw new \DomainException('Erro ao buscar a quantidade!');
+        }
+        
+    }
+
+    /**
+     * @return int Qtde de mensagens Para Conhecimento
+     */
+    public function contarMensagensParaConhecimento(int $idUnidade, int $idUsuario): int
+    {
+         $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'select count(m.id)
+                from mensagem m
+                inner join para_conhecimento c on m.id = c.mensagem_id and c.ciente = false
+                where m.rascunho = false and c.usuario_id = :idUsuario';
+
+        $resultSet = $conn->executeQuery($sql, ['idUsuario' => $idUsuario]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        $result = $resultSet->fetchAllAssociative();
+
+        if ($result) {
+            return (int) $result[0]['count'];
+        } else {
+            throw new \DomainException('Erro ao buscar a quantidade!');
+        }
+        
+    }
+
+    /**
+     * @return int Qtde de mensagens Recebidas
+     */
+    public function contarMensagensRecebidas(int $idUnidade, int $idUsuario): int
+    {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'select count(id)
+                from mensagem m
+                left join mensagem_unidades_destino d on m.id = d.mensagem_id
+                left join mensagem_unidades_informacao i on m.id = i.mensagem_id
+                where m.rascunho = false and m.data_autorizacao is not NULL and (d.unidade_id = :idUnidade or i.unidade_id = :idUnidade)';
+
+        //$resultSet = $conn->executeQuery($sql, ['price' => $price]);
+        $resultSet = $conn->executeQuery($sql, ['idUnidade' => $idUnidade]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        $result = $resultSet->fetchAllAssociative();
+
+        if ($result) {
+            return (int) $result[0]['count'];
+        } else {
+            throw new \DomainException('Erro ao buscar a quantidade!');
+        }   
     }
 
 }

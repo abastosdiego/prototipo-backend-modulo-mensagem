@@ -1,4 +1,4 @@
-FROM php:apache
+FROM php:8.3-apache
 
 #ENV TZ=America/Sao_Paulo
 

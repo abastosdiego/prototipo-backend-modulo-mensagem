@@ -30,6 +30,9 @@ class AppFixtures extends Fixture
             if($item["sigla"] == "DAdM") {
                 $unidadeDAdM = $unidade;
             }
+            if($item["sigla"] == "DAbM") {
+                $unidadeDAbM = $unidade;
+            }
             // Informa ao Doctrine que você deseja salvar esse novo objeto, quando for efetuado o flush.
             $manager->persist($unidade);
         }
@@ -137,6 +140,14 @@ class AppFixtures extends Fixture
         ///
 
         $usuario = new Usuario(nip:'23378026', nome:'Matheus Moraes', email:'nascimento.moraes@marinha.mil.br', unidade:$unidadeDAdM);
+        $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
+        $usuario->setPassword($hashedPassword);
+
+        $manager->persist($usuario);
+
+        ///
+
+        $usuario = new Usuario(nip:'16054521', nome:'Gregorio Teixeira', email:'gregorio.teixeira@marinha.mil.br', unidade:$unidadeDAbM);
         $hashedPassword = $this->passwordHasher->hashPassword($usuario, $senha);
         $usuario->setPassword($hashedPassword);
 
