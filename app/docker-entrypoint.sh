@@ -1,7 +1,8 @@
 #!/bin/bash
 
 echo "Instalando dependências via composer..."
-composer install
+#composer install
+composer update
 sleep 15
 
 echo "Criando database com doctrine..."

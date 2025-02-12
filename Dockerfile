@@ -1,4 +1,4 @@
-FROM php:apache
+FROM php:8.2.27-apache
 
 #ENV TZ=America/Sao_Paulo
 
@@ -21,6 +21,7 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 # Set the ownership and permissions for the /var/www/html directory
 #RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
+RUN chmod -R 777 /var/www/html
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
