@@ -1,16 +1,14 @@
 # Seguir os seguintes passos para subir a aplicação no ambiente local
 
-01 - Instalar o Docker.
+01 - Instalar o docker e docker compose.
 
-02 - Execute o comando "docker pull php:apache"
+02 - Executar o comando "docker compose up".
 
-03 - Executar o comando "sudo -E docker compose up".
+03 - Abrir a seguinte url no navegador para verificar se a aplicação está rodando: "localhost:8123/api/unidade".
 
-04 - Abrir a seguinte url no navegador: "localhost:8123/api/unidade".
+04 - Desta forma que foi configurado, ao subir a aplicação o sistema apaga o banco de dados e cria novamente em ambiente de desenvolvimento. Caso não queira perder os dados armazenados, abrir o arquivo "./app/docker-entrypoint.sh" e comentar as linhas, exceto a última, utilizando "#".
 
-05 - Desta forma que foi configurado, ao subir a aplicação o sistema apaga o banco de dados e cria novamente em ambiente de desenvolvimento. Caso não queira perder os dados armazenados, abrir o arquivo "./app/docker-entrypoint.sh" e comentar as linhas, exceto a última, utilizando "#".
-
-06 - Instalar o Postman ou similar no computador para testar as chamadas aos endpoints da API.
+05 - Instalar o Postman ou similar no computador para testar as chamadas aos endpoints da API.
 
 ------------------------
 # Documentação da API
@@ -21,8 +19,8 @@
 http://localhost:8123/api/login_check
 <br />
 {
-    "username": "nip",
-    "password": "dadm123"
+    "username": "17090148",
+    "password": "123456"
 }
 
 # Todas as requisições em diantes precisarão passar no header o token recebido na api de login
