@@ -1,0 +1,195 @@
+### Login
+POST http://localhost:8123/api/login_check
+Content-Type: application/json
+
+{
+    "username": "17090148",
+    "password": "123456"
+}
+
+###
+
+### Unidade
+GET http://localhost:8123/api/unidade
+Authorization: Bearer {token}
+
+###
+
+### Usuario
+GET http://localhost:8123/api/usuario/unidade/{siglaUnidade}
+Authorization: Bearer {token}
+
+###
+
+### Mensagem
+GET http://localhost:8123/api/mensagem/rascunho
+Authorization: Bearer {token}
+
+###
+
+GET http://localhost:8123/api/mensagem/aguardando-transmissao
+Authorization: Bearer {token}
+
+###
+
+GET http://localhost:8123/api/mensagem/enviadas
+Authorization: Bearer {token}
+
+###
+
+GET http://localhost:8123/api/mensagem/{idMensagem}
+Authorization: Bearer {token}
+
+###
+
+POST http://localhost:8123/api/mensagem
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "assunto": "Assunto",
+    "texto": "Texto",
+    "sigilo": "Ostensivo",
+    "prazo_transmissao": "20240131",
+    "observacao": "Observação",
+    "unidadesDestinoSiglas" : ["DAdM","DFM"],
+    "unidadesInformacaoSiglas" : ["DGOM"],
+    "exige_resposta" : true,
+    "prazo_resposta" : "20240501"
+}
+
+###
+
+PUT http://localhost:8123/api/mensagem/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "assunto": "Assunto",
+    "texto": "Texto",
+    "sigilo": "Ostensivo",
+    "prazo_transmissao": "20240131",
+    "observacao": "Observação",
+    "unidadesDestinoSiglas" : ["DAdM","DFM"],
+    "unidadesInformacaoSiglas" : ["DGOM"],
+    "exige_resposta" : true,
+    "prazo_resposta" : "20240501"
+}
+
+###
+
+DELETE http://localhost:8123/api/mensagem/{idMensagem}
+Authorization: Bearer {token}
+
+###
+
+PUT http://localhost:8123/api/mensagem/autorizar/{idMensagem}
+Authorization: Bearer {token}
+
+###
+
+### Comentários
+POST http://localhost:8123/api/mensagem/comentario/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "texto": "texto do comentário"
+}
+
+###
+
+PUT http://localhost:8123/api/mensagem/comentario/{idMensagem}/{idComentario}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "texto": "texto do comentário"
+}
+
+###
+
+DELETE http://localhost:8123/api/mensagem/comentario/{idMensagem}/{idComentario}
+Authorization: Bearer {token}
+
+###
+
+### Trâmites
+POST http://localhost:8123/api/mensagem/tramite/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "tramite_futuro": ["01052331","87300061","85988359"]
+}
+
+###
+
+PUT http://localhost:8123/api/mensagem/tramite/alterar/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "tramite_futuro": ["01052331","17090148","87300061","85988359"]
+}
+
+###
+
+PUT http://localhost:8123/api/mensagem/tramite/encaminhar/{idMensagem}
+Authorization: Bearer {token}
+
+###
+
+PUT http://localhost:8123/api/mensagem/tramite/encaminhar-para/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "usuario": "05060825043"
+}
+
+###
+
+### Para Conhecimento
+GET http://localhost:8123/api/mensagem/para-conhecimento/listar
+Authorization: Bearer {token}
+
+###
+
+POST http://localhost:8123/api/mensagem/para-conhecimento/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "para_conhecimento": ["87358549","86798561"]
+}
+
+###
+
+PUT http://localhost:8123/api/mensagem/para-conhecimento/adicionar/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "nip": "17090148"
+}
+
+###
+
+DELETE http://localhost:8123/api/mensagem/para-conhecimento/remover/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "nip": "01052331"
+}
+
+###
+
+PUT http://localhost:8123/api/mensagem/para-conhecimento/ciente/{idMensagem}
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "nip": "01052331"
+}
